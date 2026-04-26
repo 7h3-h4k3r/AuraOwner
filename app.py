@@ -10,6 +10,13 @@ def home():
 @app.route('/assets/<path:filename>')
 def assets(filename):
     return send_from_directory('static/assets', filename)
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
 @app.route('/profit')
 def profit_template():
     return render_template('profit.html')
