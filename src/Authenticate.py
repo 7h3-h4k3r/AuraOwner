@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from bcrypt import *
 from datetime import datetime
 from Database import Mconn
+from Sessions  import Session
 from pymongo.errors import PyMongoError
 from uuid import uuid4
 
@@ -17,7 +18,8 @@ class Users:
             if not result['active']:
                 raise Exception('user account not verifiyed')
             if checkpw(password.encode() ,result['password']):
-                return True
+                sess = Session.register_session(result['username'], request=request)
+                return sess.id
             else:
                 return False 
             
@@ -42,6 +44,7 @@ class Users:
 
         try:
             db.users.insert_one(user_data)
+            return uuid
         except PyMongoError as e:
             raise ('Error' , str(e))
 
