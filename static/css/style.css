@@ -22183,3 +22183,29 @@ pre[class*=language-] {
     overflow:auto!important
   }
 }
+
+
+.submenu {
+  display: none;
+  margin-left: 10px;
+}
+
+.submenu .nav-link {
+  font-size: 14px;
+  color: #67748e;
+  padding: 6px 0;
+}
+
+.submenu .nav-link:hover {
+  color: #344767;
+}
+
+.arrow {
+  font-size: 12px;
+  transition: 0.3s;
+}
+
+/* rotate arrow when open */
+.nav-item.open .arrow {
+  transform: rotate(180deg);
+}

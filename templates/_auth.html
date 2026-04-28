@@ -6,3 +6,11 @@
     {% include '_auth_nav.html' %}
     {%block content %}{% endblock %}
     {% include '_auth_footer.html' %}
+<script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+{%if request.path == '/login' %}
+    <script src="{{ url_for('static', filename='js/auth/login.js') }}"></script>
+{%else %}
+    <script src="{{ url_for('static', filename='js/auth/signup.js') }}"></script>
+{%endif%}
+
+<script src="{{ url_for('static', filename='js/app/app.js') }}"></script>
