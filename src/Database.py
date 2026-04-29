@@ -1,22 +1,24 @@
 from pymongo import MongoClient
-
-
+import os
 
 class Mconn:
+    _client = None
+    _db = None
 
-    db = None 
+    @classmethod
+    def get(cls):
 
-    @staticmethod
-    def get():
-        try:
-            if not Mconn.db:
-                client = MongoClient('mongodb://localhost:27017/')
-                Mconn.db = client['AuraWear']
-            else:
-                return Mconn.db
-            return Mconn.db
-        except Exception as e:
-            raise('DataBase Connection Error')
-    
+        if cls._db is None:
+            uri = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
+            db_name = os.getenv('MONGO_DB', 'AuraWear')
+            cls._client = MongoClient(uri)
+            cls._db = cls._client[db_name]
+        return cls._db
 
-# test = Mconn.get().users.insert_one({'test': 'test'})
+    @classmethod
+    def close(cls):
+        """Close the underlying MongoDB client."""
+        if cls._client:
+            cls._client.close()
+            cls._client = None
+            cls._db = None

@@ -1,12 +1,14 @@
-class Signup {
+class Login {
     constructor() {}
 
 
 
     validateForm(data) {
         return (
-            data.username.length >= 3 &&
-            data.password.length >= 7
+            data.username &&
+            data.password &&
+            data.username.trim().length >= 3 &&
+            data.password.trim().length >= 7
         );
     }
 
@@ -36,42 +38,40 @@ class Signup {
             const data = {
                 username: $('#username').val().trim(),
                
-                phone: $('#phone').val().trim()
+                password: $('#password').val().trim(),
             };
-
+            
             // Final validation before API
             if (!this.validateForm(data)) {
                 alert('Invalid input. Please check all fields.');
                 return;
             }
 
+            const response = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            let result;
             try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
+                result = await response.json();
+            } catch (e) {
+                console.error("Response is not JSON");
+                const text = await response.text();
+                console.log("RAW RESPONSE:", text);
+                return;
+            }
 
-                const result = await response.json();
-
-                if (response.ok) {
-                    console.log('Success:', result);
-                    alert('Login successful');
-                } else {
-                    console.log('Error:', result);
-                    alert(result.error || 'Login failed');
-                }
-
-            } catch (error) {
-                console.error('Network error:', error);
-                alert('Something went wrong');
+            if (response.ok) {
+                window.location.href = result.redirect;
+            } else {
+                alert("in valid Credentials Signin failed");
             }
         });
     }
 }
 
 
-const l = new Signup();
+const l = new Login();
 l.run();

@@ -1,8 +1,8 @@
 from  mongogettersetter import MongoGetterSetter
-from Database import Mconn
+from .Database import Mconn
 from uuid import uuid4
 from time import time
-db = MConn.get()
+db = Mconn.get()
 
 class SessionCollection(metaclass=MongoGetterSetter):
     def __init__(self, id):

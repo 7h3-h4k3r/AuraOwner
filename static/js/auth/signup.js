@@ -62,30 +62,29 @@ class Signup {
                 return;
             }
 
+            const response = await fetch('/api/v1/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            let result;
             try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    console.log('Success:', result);
-                    alert('Login successful');
-                } else {
-                    console.log('Error:', result);
-                    alert(result.error || 'Login failed');
-                }
-
-            } catch (error) {
-                console.error('Network error:', error);
-                alert('Something went wrong');
+                result = await response.json();
+            } catch (e) {
+                console.error("Response is not JSON");
+                const text = await response.text();
+                console.log("RAW RESPONSE:", text);
+                return;
             }
-        });
+
+            if (response.ok) {
+                window.location.href = result.redirect;
+            } else {
+                alert("Credentials alreay exist Signup failed");
+            }
+
+    });
     }
 }
 

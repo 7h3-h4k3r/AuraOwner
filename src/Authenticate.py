@@ -1,8 +1,8 @@
 from pymongo import MongoClient 
 from bcrypt import *
 from datetime import datetime
-from Database import Mconn
-from Sessions  import Session
+from .Database import Mconn
+from .Sessions  import Session
 from pymongo.errors import PyMongoError
 from uuid import uuid4
 
@@ -12,7 +12,7 @@ class Users:
 
     
     @staticmethod
-    def login(username , password):
+    def login(username , password ,request):
         try:
             result = db.users.find_one({'username':username})
             if not result['active']:
@@ -31,9 +31,10 @@ class Users:
     def signup(username, password ,email, phone_no):
         hash_pass = password.encode()
         salt = gensalt()
+        uuid = str(uuid4())
         user_data = {
             'username' : username,
-            'uid' : str(uuid4()),
+            'uid' : uuid,
             'password' : hashpw(hash_pass,salt),
             'email' : email,
             'phone' : phone_no,
