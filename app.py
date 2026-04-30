@@ -2,10 +2,12 @@ from flask import Flask , render_template , send_from_directory ,session , redir
 
 from blueprints.authentication import auth 
 from blueprints.dialog import dialog
+from blueprints.catogory import catogory 
 app = Flask(__name__)
 app.secret_key= 'os.getenv(\'SECRET_KEY\')'
 app.register_blueprint(auth)
 app.register_blueprint(dialog)
+app.register_blueprint(catogory)
 
 @app.route('/dashboard')
 def home():

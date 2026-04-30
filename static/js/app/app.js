@@ -52,7 +52,16 @@ $('.btn-add-catogory').on('click',function(){
                     var name = $('#catogory-name').val().trim()
                     var desc = $('#description-area').val().trim()
                     if (name.length >= 3 && desc.length >= 5){
-                        console.log('yes its good')
+                        $.post(
+                            '/api/v1/create/catogory',
+                            {
+                                'catogory' : name,
+                                'description' : desc,
+                            },
+                            function(data,status){
+                                console.log('Data :' + data + "status" +  status)
+                            }
+                        )
                     }else{
                         animateCSS(modal.find('.btn-create-catogory')[0], 'shakeX');
                     }

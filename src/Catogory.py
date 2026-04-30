@@ -1,5 +1,5 @@
 from mongogettersetter import MongoGetterSetter
-from Database import Mconn
+from .Database import Mconn
 from uuid import uuid4
 from datetime import datetime
 db = Mconn.get()
@@ -20,13 +20,13 @@ class Catogory:
     def __init__(self,id):
         try:
             self.collection = catogoryCollection(id)
-            self.id = self.collection.id
+            self.id = self.collection._id
         except:
             raise('Database Error')
     
 
     @staticmethod
-    def put(catogory,username):
+    def put(catogory,username,description):
         
         uid = str(uuid4())
 
@@ -34,6 +34,7 @@ class Catogory:
             'uid' : uid,
             'who_is' : username,
             'catogory' : catogory,
+            'description' : description,
             'stock_in' : datetime.now(),
         }
 
@@ -41,6 +42,6 @@ class Catogory:
         
         if not result:
             return False 
-        
+
         return Catogory(uid)
 
