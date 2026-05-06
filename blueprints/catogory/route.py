@@ -5,6 +5,16 @@ from flask import render_template, redirect, url_for, flash, request ,session ,j
 from flask import Blueprint
 from . import catogory
 
+@catogory.route('/get/catogory',methods=['POST'])
+def get_catogory_ui():
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
+
+    if 'uid' not in request.form:
+        return {'error' : 'Bad request'},409
+    uid = request.form.uid('uid')
+    obj_catogory = catogory(uid)
+    return render_template('dialogs/catogory_list.html',session=session,details=obj_catogory)
 
 @catogory.route('/create/catogory',methods=['POST'])
 def set_catogory():
@@ -21,7 +31,7 @@ def set_catogory():
         catogory_obj = Catogory.put(catogory_name,user_name,description)
         
         if catogory_obj.id:
-            return {'success' : catogory_obj.collection.uid},201
+            return {'uid' : catogory_obj.collection.uid},201
     
     except Exception as e:
         return {'error' : 'somewent is wrong' + str(e)},400

@@ -59,7 +59,7 @@ $('.btn-add-catogory').on('click',function(){
                                 'description' : desc,
                             },
                             function(data,status){
-                                console.log('Data :' + data + "status" +  status)
+                                console.log('Data :' + data['uid'] + "status" +  status)
                             }
                         )
                     }else{
