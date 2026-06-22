@@ -226,25 +226,37 @@
           <form id="productForm" enctype="multipart/form-data">
             
             <div class="row">
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6 mb-3 form-group ">
                 <label class="form-control-label">Product Name</label>
-                <input type="text" name="name" id="productName" class="form-control" placeholder="Nike T-Shirt">
+                <input type="text" name="name" id="productName" class="form-control required" data-min-length="4" placeholder="Nike T-Shirt">
+                <div class="invalid-feedback">
+                  Product name is required
+                </div>
               </div>
               
-              <div class="col-md-3 mb-3">
-                <label class="form-control-label">Price</label>
-                <input type="number" name="price" id="price" class="form-control" placeholder="999">
+              <div class="col-md-3 mb-3 ">
+                <label class="form-control-label">Profit Zone</label>
+                <input type="text" name="price" id="price" class="form-control required" placeholder="999">
+                <div class="invalid-feedback">
+                  Profit Zone is required
+                </div>
               </div>
               
               <div class="col-md-3 mb-3">
                 <label class="form-control-label">Quantity</label>
-                <input type="number" name="quantity" id="quantity" class="form-control" placeholder="10">
+                <input type="text" name="quantity" id="quantity" class="form-control required"  placeholder="10">
+                <div class="invalid-feedback">
+                  Quantity is required
+                </div>
               </div>
             </div>
             
             <div class="mb-3">
               <label class="form-control-label">Description</label>
-              <textarea name="description" id="description" class="form-control" rows="4" placeholder="Product description"></textarea>
+              <textarea name="description" id="description" class="form-control required" rows="4" placeholder="Product description"></textarea>
+              <div class="invalid-feedback">
+                Discription is required
+              </div>
             </div>
             
             <hr class="horizontal dark">
@@ -254,15 +266,24 @@
             <div id="variantBox">
               <div class="row variant-row">
                 <div class="col-md-3 mb-3">
-                  <input type="text" class="form-control color" placeholder="Color">
+                  <input type="text" class="required form-control color" placeholder="Color">
+                  <div class="invalid-feedback">
+                  colour is required
+                </div>
                 </div>
                 
                 <div class="col-md-3 mb-3">
-                  <input type="text" class="form-control size" placeholder="Size">
+                  <input type="text" class="required form-control size" placeholder="Size">
+                  <div class="invalid-feedback">
+                size is required
+              </div>
                 </div>
                 
-                <div class="col-md-3 mb-3">
-                  <input type="number" class="form-control variant-price" placeholder="Price">
+                <div class="col-md-3 mb-3 ">
+                  <input type="number" class="required form-control variant-price" placeholder="Price">
+                  <div class="invalid-feedback">
+                prize is required
+              </div>
                 </div>
                 
                 <div class="col-md-3 mb-3">
@@ -356,53 +377,52 @@
               </div>
             </div> -->
             <div class="card product-preview-card shadow-none border mt-3">
-  <div class="card-body">
-
-    <div class="product-preview-box">
-
-      <div class="main-image-box previewImage">
-        <span class="discount-badge">
-          <span id="previewDiscount">10</span>% OFF
-        </span>
-
-        <span class="stock-badge" id="previewStockBadge">In Stock</span>
-
-        <img src="https://via.placeholder.com/300x300?text=No+Image">
-      </div>
-
-      <div class="info-section">
-        <div class="preview-header">
-          <span class="category-badge" id="previewCategory">Fashion</span>
-          <span class="live-badge">Live Preview</span>
-        </div>
-
-        <h4 id="previewName">Product Name</h4>
-
-        <p id="previewDesc">
-          Product description preview...
-        </p>
-
-        <div class="price-box">
-          <h3>₹<span id="previewPrice">0</span></h3>
-          <span class="old-price">₹<span id="previewOldPrice">0</span></span>
-        </div>
-
-        <div class="preview-meta">
-          <span>Qty: <b id="previewQty">0</b></span>
-          <span>SKU: <b id="previewSku">SKU-001</b></span>
-        </div>
-
-        <div class="preview-tags">
-          <span>Fast delivery</span>
-          <span>Best seller</span>
-          <span>Premium</span>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</div>
+              <div class="card-body">
+                
+                <div class="product-preview-box">
+                  
+                  <div class="main-image-box previewImage">
+                    <span class="discount-badge">
+                      <span id="previewDiscount">10</span>% OFF
+                    </span>
+                    
+                    <span class="stock-badge" id="previewStockBadge">In Stock</span>
+                    
+                    <img id="imageHolder" src=""  alt="No Image Available">
+                  </div>
+                  
+                  <div class="info-section">
+                    <div class="preview-header">
+                      <span class="category-badge" id="previewCategory">Fashion</span>
+                      <span class="live-badge">Live Preview</span>
+                    </div>
+                    
+                    <h4 id="previewName">Product Name</h4>
+                    
+                    <p id="previewDesc">
+                      Product description preview...
+                    </p>
+                    <div class="price-box">
+                      <h3>₹<span id="previewPrice">0</span></h3>
+                      <span class="old-price">₹<span id="previewOldPrice">0</span></span>
+                    </div>
+                    
+                    <div class="preview-meta">
+                      <span>Qty: <b id="previewQty">0</b></span>
+                      <span>SKU: <b id="previewSku">SKU-001</b></span>
+                    </div>
+                    
+                    <div class="preview-tags">
+                      <span>Fast delivery</span>
+                      <span>Best seller</span>
+                      <span>Premium</span>
+                    </div>
+                  </div>
+                  
+                </div>
+                
+              </div>
+            </div>
             <div class="text-end mt-4">
               <button type="submit" class="btn bg-gradient-primary">
                 Save Product

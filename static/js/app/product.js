@@ -1,3 +1,34 @@
+
+function scrollToInvalid() {
+  const firstInvalid = $(".is-invalid").first();
+
+  if (firstInvalid.length) {
+    $("html, body").animate({
+      scrollTop: firstInvalid.offset().top - 100
+    }, 500);
+
+    firstInvalid.focus();
+  }
+}
+
+
+function validate() {
+    let isValid = true;
+
+    $(".required").each(function () {
+
+        if ($(this).val().trim() === "") {
+            $(this).addClass("is-invalid");
+            isValid = false;
+        } else {
+            $(this).removeClass("is-invalid");
+        }
+
+    });
+
+    return isValid;
+}
+
 $(document).ready(function () {
   let selectedImages = [];
 
@@ -13,6 +44,7 @@ $(document).ready(function () {
 
   }
 
+  
   $("#productName, #description, #price, #quantity , #preview-gallery").on("input", updatePreview);
 
  
@@ -21,6 +53,9 @@ $(document).ready(function () {
     $("#images").click();
   });
 
+ 
+
+  
   $("#images").on("change", function () {
     handleFiles(this.files);
     $(this).val("");
@@ -106,24 +141,33 @@ $(document).ready(function () {
   $("#addVariant").on("click", function () {
     $("#variantBox").append(`
       <div class="row variant-row">
-        <div class="col-md-3 mb-3">
-          <input type="text" class="form-control color" placeholder="Color">
-        </div>
-
-        <div class="col-md-3 mb-3">
-          <input type="text" class="form-control size" placeholder="Size">
-        </div>
-
-        <div class="col-md-3 mb-3">
-          <input type="number" class="form-control variant-price" placeholder="Price">
-        </div>
-
-        <div class="col-md-3 mb-3">
-          <button type="button" class="btn bg-gradient-danger removeVariant w-100">
-            Remove
-          </button>
-        </div>
-      </div>
+                <div class="col-md-3 mb-3">
+                  <input type="text" class="required form-control color" placeholder="Color">
+                  <div class="invalid-feedback">
+                  colour is required
+                </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                  <input type="text" class="required form-control size" placeholder="Size">
+                  <div class="invalid-feedback">
+                size is required
+              </div>
+                </div>
+                
+                <div class="col-md-3 mb-3 ">
+                  <input type="number" class="required form-control variant-price" placeholder="Price">
+                  <div class="invalid-feedback">
+                prize is required
+              </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                  <button type="button" class="btn bg-gradient-danger removeVariant w-100">
+                    Remove
+                  </button>
+                </div>
+              </div>
     `);
   });
 
@@ -138,42 +182,45 @@ $(document).ready(function () {
     e.preventDefault();
 
     const formData = new FormData();
+    if(!validate()){
+      scrollToInvalid();
+      return;
+    }
+    // formData.append("name", $("#productName").val());
+    // formData.append("description", $("#description").val());
+    // formData.append("price", $("#price").val());
+    // formData.append("quantity", $("#quantity").val());
 
-    formData.append("name", $("#productName").val());
-    formData.append("description", $("#description").val());
-    formData.append("price", $("#price").val());
-    formData.append("quantity", $("#quantity").val());
+    // selectedImages.forEach(function (file) {
+    //   formData.append("images[]", file);
+    // });
 
-    selectedImages.forEach(function (file) {
-      formData.append("images[]", file);
-    });
+    // const variants = [];
 
-    const variants = [];
+    // $(".variant-row").each(function () {
+    //   variants.push({
+    //     color: $(this).find(".color").val(),
+    //     size: $(this).find(".size").val(),
+    //     price: $(this).find(".variant-price").val()
+    //   });
+    // });
 
-    $(".variant-row").each(function () {
-      variants.push({
-        color: $(this).find(".color").val(),
-        size: $(this).find(".size").val(),
-        price: $(this).find(".variant-price").val()
-      });
-    });
+    // formData.append("variants", JSON.stringify(variants));
 
-    formData.append("variants", JSON.stringify(variants));
-
-    $.ajax({
-      url: "/add-product",
-      type: "POST",
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function (data) {
-        console.log(data);
-        alert("Product saved successfully");
-      },
-      error: function (err) {
-        console.error(err);
-        alert("Something went wrong");
-      }
-    });
+    // $.ajax({
+    //   url: "/add-product",
+    //   type: "POST",
+    //   data: formData,
+    //   processData: false,
+    //   contentType: false,
+    //   success: function (data) {
+    //     console.log(data);
+    //     alert("Product saved successfully");
+    //   },
+    //   error: function (err) {
+    //     console.error(err);
+    //     alert("Something went wrong");
+    //   }
+    // });
   });
 });
