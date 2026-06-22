@@ -25,10 +25,20 @@ def login():
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
+
+
+@app.route('/shirts')
+def product():
+    if session.get('authenticated'):
+        return render_template('productlist.html')
+    return render_template('login.html')
+
+
 @app.route('/catogory')
 def profit_template():
     if session.get('authenticated'):
         return render_template('catogory.html')
     return render_template('login.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

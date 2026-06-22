@@ -1,0 +1,183 @@
+
+  
+  <form >
+    <div class="form-group ">
+      <label >Name</label>
+      <input type="text" class="form-control is-invalid" id="name" placeholder="ex : vibe code">
+    </div>
+    <div id="variantRows">
+      
+      <div class="row mb-2 variant-row">
+        <div class="col-md-3">
+          <input name="color[]" class="form-control color" placeholder="Colour">
+        </div>
+        
+        <div class="col-md-3">
+          <input name="size[]" class="form-control size" placeholder="Size">
+        </div>
+        
+        <div class="col-md-3">
+          <input name="price[]" class="form-control price" placeholder="Price">
+        </div>
+        
+        <div class="col-md-3">
+          <button type="button" class="btn btn-danger removeRow">Delete</button>
+        </div>
+        <div class="col-md-3">
+          <button type="button" class="btn btn-danger removeRow">Delete</button>
+        </div>
+      </div>
+      
+    </div>
+    
+    <button type="button" id="addRow" class="btn btn-primary">Add Variant</button>
+    
+    
+    <div class="col-md-3">
+      <div class="form-group has-success">
+        <label>Quantity</label>
+        <input type="text" id = "quantity" placeholder="50" class="form-control is-invalid" />
+      </div>
+    </div>
+
+
+<label>Upload Images</label>
+
+<div class="image-grid">
+  
+  <div class="drop-area" id="dropArea">
+    <div class="upload-content">
+      <div>📷</div>
+      <h4>Drag & Drop Images Here</h4>
+      <p>or</p>
+      
+      <button type="button" onclick="document.getElementById('images').click()">
+        Choose Images
+      </button>
+      
+      <input type="file" id="images" multiple accept="image/*">
+    </div>
+  </div>
+</div>
+  
+  <div id="gallery"></div>
+  
+
+  <p id="message" class="message"></p>
+
+  <div class="form-group">
+    <label >Description</label>
+    <textarea class="form-control is-invalid" id="desc" rows="3"></textarea>
+  </div>
+</form>
+
+<script>
+  const input = document.getElementById("images");
+  const gallery = document.getElementById("gallery");
+  const message = document.getElementById("message");
+  const dropArea = document.getElementById("dropArea");
+  
+  const MAX_IMAGES = 7;
+  const MIN_IMAGES = 5;
+  let uploadedImages = [];
+  
+  input.addEventListener("change", function () {
+    handleFiles(this.files);
+    input.value = "";
+  });
+  
+  dropArea.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    dropArea.classList.add("active");
+  });
+  
+  dropArea.addEventListener("dragleave", function () {
+    dropArea.classList.remove("active");
+  });
+  
+  dropArea.addEventListener("drop", function (e) {
+    e.preventDefault();
+    dropArea.classList.remove("active");
+    handleFiles(e.dataTransfer.files);
+  });
+  
+  function handleFiles(files) {
+    const imageFiles = Array.from(files).filter(file =>
+    file.type.startsWith("image/")
+    );
+    
+    if (uploadedImages.length + imageFiles.length > MAX_IMAGES) {
+      message.textContent = "Maximum 7 images only OR Minimum 5 images only allowed.";
+      return;
+    }
+    
+    message.textContent = "";
+    
+    imageFiles.forEach(file => {
+      uploadedImages.push(file);
+      
+      const imageURL = URL.createObjectURL(file);
+      
+      const card = document.createElement("div");
+      card.className = "image-card";
+      
+      const img = document.createElement("img");
+      img.src = imageURL;
+      
+      const removeBtn = document.createElement("button");
+      removeBtn.className = "remove-btn";
+      removeBtn.innerHTML = "&times;";
+      
+      removeBtn.addEventListener("click", function () {
+        uploadedImages = uploadedImages.filter(imgFile => imgFile !== file);
+        URL.revokeObjectURL(imageURL);
+        card.remove();
+        message.textContent = "";
+      });
+      
+      card.appendChild(img);
+      card.appendChild(removeBtn);
+      gallery.appendChild(card);
+    });
+  }
+  
+</script>
+<script>
+  const on = function(this_value){
+    this_value.removeClass('is-invalid')
+    this_value.addClass('is-valid')
+  }
+  
+  const off = function(this_value){
+    this_value.removeClass('is-valid')
+    this_value.addClass('is-invalid')
+  }
+  $('#name').on("input",function(){
+    let currentVal = $(this).val();
+    if (currentVal.length > 3){
+      on($(this))
+    }else{
+      off($(this))
+    }
+  })
+  
+  $('#quantity').on("input",function(){
+    let currentVal = parseInt($(this).val())
+    console.log(currentVal)
+    if (currentVal!=NaN && currentVal > 0){
+      on($(this))
+    }else{
+      off($(this))
+    }
+  })
+  
+  $('#price').on("input",function(){
+    let currentVal = parseInt($(this).val())
+    console.log(currentVal)
+    if (currentVal!=NaN && currentVal > 0){
+      on($(this))
+    }else{
+      off($(this))
+    }
+  })
+</script>

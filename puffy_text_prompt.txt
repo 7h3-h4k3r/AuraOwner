@@ -1,0 +1,18 @@
+
+Please take this image and apply a realistic 3D puff-print effect, making the design appear slightly inflated—like soft, raised relief ink on fabric. The artwork should look full, smooth, and elevated, with rounded, cushion-like edges similar to premium padded vinyl.
+
+STRICT RULES (DO NOT BREAK):
+
+Place the design on a solid, pure white background.
+
+ABSOLUTELY NO drop shadows, cast shadows, ambient shadows, contact shadows, inner shadows, or lighting shadows of any kind.
+
+Do NOT simulate depth using shading, shadow gradients, or light falloff.
+
+The puff effect must be created only by thickness, rounded contours, and edge volume, not by shadowing.
+
+Keep all original colors exactly the same.
+
+Do NOT add metallic effects, embroidery, stitching, fabric texture, grain, or gloss.
+
+The final output must look flat-lit, clean, high-resolution, and print-ready for DTF, with crisp edges and zero shadow artifacts anywhere in the design.

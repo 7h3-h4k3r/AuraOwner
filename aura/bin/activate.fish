@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/oxbin-sh/Downloads/AureOwner/aura
+set -gx VIRTUAL_ENV /home/oxbin-sh/Downloads/AuraOwner/aura
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH

@@ -10,3 +10,10 @@ def get_catogory_ui():
     if not session.get('authenticated'):
         return redirect(url_for('login'))
     return render_template('dialogs/catogory.html',session=session)
+
+
+@dialog.route('/create/product',methods=['GET'])
+def get_product_ui():
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
+    return render_template('dialogs/product.html',session=session)
