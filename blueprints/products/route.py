@@ -7,7 +7,7 @@ from uuid import uuid4
 from src.Product import Product
 import os
 from werkzeug.utils import secure_filename
-from . import product , validate_product_form , allowed_file 
+from . import product , validate_product_form , allowed_file , get_products
 
 
 UPLOAD_FOLDER = "static/uploads/products"
@@ -25,7 +25,38 @@ def get_catogory_ui():
     obj_catogory = catogory(uid)
     return render_template('dialogs/catogory_list.html',session=session,details=obj_catogory)
 
+@product.route("/get-product", methods=["POST"])
+def getProduct():
+    page = int(request.form.get("page", 1))
+    limit = 10
 
+    products = (
+        db.product.find()
+        .sort("_id", -1)
+        .skip((page - 1) * limit)
+        .limit(limit)
+    )
+
+    return render_template(
+        "table/product.html",
+        products=list(products)
+    )
+
+
+
+@product.route("/set-product",methods=["POST"])
+def setProduct():
+    uuid = request.form.get("uuid", "").strip()
+    if not uuid:
+        return jsonify({
+            "status" : "error",
+            "errors" : "Product not found"
+        })
+
+    pro_obj = Product(uuid)
+    return render_template('table/product.html',session=session,product=pro_obj)
+
+    
 @product.route("/add-product", methods=["POST"])
 def add_product():
     errors, data = validate_product_form(request)

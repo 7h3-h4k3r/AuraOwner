@@ -25,36 +25,65 @@
                   <th class="text-secondary opacity-7"></th>
                 </tr>
               </thead>
-              <tbody id="set-catogory">
+              <tbody id="set-product">
+                
+                {% for product in products %}
                 <tr>
+                  
                   <td>
                     <div class="d-flex px-2 py-1">
+                      
                       <div>
-                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm me-3" alt="user1">
+                        <img
+                        src="{{ url_for('static', filename=product.images[0]) }}"
+                        class="avatar avatar-sm me-3"
+                        alt="{{ product.name }}"
+                        >
                       </div>
+                      
                       <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">John Michael</h6>
-                        <p class="text-xs text-secondary mb-0"><a href="https://demos.creative-tim.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b4dedbdcdaf4d7c6d1d5c0ddc2d199c0ddd99ad7dbd9">[email&#160;protected]</a></p>
+                        <h6 class="mb-0 text-sm">{{ product.name }}</h6>
+                        <p class="text-xs text-secondary mb-0">
+                          {{ product.uuid }}
+                        </p>
                       </div>
+                      
                     </div>
                   </td>
+                  
                   <td>
-                    <p class="text-xs font-weight-bold mb-0">Manager</p>
-                    <p class="text-xs text-secondary mb-0">Organization</p>
+                    <p class="text-xs font-weight-bold mb-0">
+                      ₹{{ product.price }}
+                    </p>
+                    
+                    <p class="text-xs text-secondary mb-0">
+                      Qty: {{ product.quantity }}
+                    </p>
                   </td>
+                  
                   <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm bg-gradient-success">Online</span>
+                    {% if product.status %}
+                    <span class="badge badge-sm bg-gradient-success">
+                      Active
+                    </span>
+                    {% else %}
+                    <span class="badge badge-sm bg-gradient-secondary">
+                      Inactive
+                    </span>
+                    {% endif %}
                   </td>
+                  
                   <td class="align-middle text-center">
                     
                     <div class="d-flex justify-content-center align-items-center h-100">
                       
                       <div class="form-check form-switch m-0">
                         
-                        <input 
-                        class="form-check-input" 
-                        type="checkbox" 
-                        checked
+                        <input
+                        class="form-check-input product-status"
+                        type="checkbox"
+                        data-uuid="{{ product.uuid }}"
+                        {% if product.status %}checked{% endif %}
                         >
                         
                       </div>
@@ -62,377 +91,244 @@
                     </div>
                     
                   </td>
+                  
                   <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div>
-                        <img src="../assets/img/team-3.jpg" class="avatar avatar-sm me-3" alt="user2">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Alexa Liras</h6>
-                        <p class="text-xs text-secondary mb-0"><a href="https://demos.creative-tim.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a1c0cdc4d9c0e1c2d3c4c0d5c8d7c48cd5c8cc8fc2cecc">[email&#160;protected]</a></p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Programator</p>
-                    <p class="text-xs text-secondary mb-0">Developer</p>
-                  </td>
-                  <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm bg-gradient-secondary">Offline</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">11/01/19</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div>
-                        <img src="../assets/img/team-4.jpg" class="avatar avatar-sm me-3" alt="user3">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Laurent Perrier</h6>
-                        <p class="text-xs text-secondary mb-0"><a href="https://demos.creative-tim.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="711d100403141f053112031410051807145c05181c5f121e1c">[email&#160;protected]</a></p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Executive</p>
-                    <p class="text-xs text-secondary mb-0">Projects</p>
-                  </td>
-                  <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm bg-gradient-success">Online</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">19/09/17</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div>
-                        <img src="../assets/img/team-3.jpg" class="avatar avatar-sm me-3" alt="user4">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Michael Levi</h6>
-                        <p class="text-xs text-secondary mb-0"><a href="https://demos.creative-tim.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3e53575d565f5b527e5d4c5b5f4a57485b134a5753105d5153">[email&#160;protected]</a></p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Programator</p>
-                    <p class="text-xs text-secondary mb-0">Developer</p>
-                  </td>
-                  <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm bg-gradient-success">Online</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">24/12/08</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div>
-                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm me-3" alt="user5">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Richard Gran</h6>
-                        <p class="text-xs text-secondary mb-0"><a href="https://demos.creative-tim.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2b594248434a594f6b48594e4a5f425d4e065f424605484446">[email&#160;protected]</a></p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Manager</p>
-                    <p class="text-xs text-secondary mb-0">Executive</p>
-                  </td>
-                  <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm bg-gradient-secondary">Offline</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">04/10/21</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div>
-                        <img src="../assets/img/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Miriam Eric</h6>
-                        <p class="text-xs text-secondary mb-0"><a href="https://demos.creative-tim.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3c51554e555d517c5f4e595d48554a5911485551125f5351">[email&#160;protected]</a></p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Programtor</p>
-                    <p class="text-xs text-secondary mb-0">Developer</p>
-                  </td>
-                  <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm bg-gradient-secondary">Offline</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">14/09/20</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                    <a
+                    href="/product/{{ product.uuid }}"
+                    class="text-secondary font-weight-bold text-xs"
+                    >
+                    Edit
+                  </a>
+                </td>
+                
+              </tr>
+              {% endfor %}
+              
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-12">
-      <div class="card mb-4">
-        <div class="card-header pb-0">
-          <h6>Add Product</h6>
-        </div>
-        
-        <div class="card-body">
-          <form id="productForm" enctype="multipart/form-data">
-            
-            <div class="row">
-              <div class="col-md-6 mb-3 form-group ">
-                <label class="form-control-label">Product Name</label>
-                <input type="text" name="name" id="productName" class="form-control required" data-min-length="4" placeholder="Nike T-Shirt">
-                <div class="invalid-feedback">
-                  Product name is required
-                </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header pb-0">
+        <h6>Add Product</h6>
+      </div>
+      
+      <div class="card-body">
+        <form id="productForm" enctype="multipart/form-data">
+          
+          <div class="row">
+            <div class="col-md-6 mb-3 form-group ">
+              <label class="form-control-label">Product Name</label>
+              <input type="text" name="name" id="productName" class="form-control required" data-min-length="4" placeholder="Nike T-Shirt">
+              <div class="invalid-feedback">
+                Product name is required
               </div>
-              
-              <div class="col-md-3 mb-3 ">
-                <label class="form-control-label">Profit Zone</label>
-                <input type="text" name="price" id="price" class="form-control required" placeholder="999">
+            </div>
+            
+            <div class="col-md-3 mb-3 ">
+              <label class="form-control-label">Profit Zone</label>
+              <input type="text" name="price" id="price" class="form-control required" placeholder="999">
+              <div class="invalid-feedback">
+                Profit Zone is required
+              </div>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+              <label class="form-control-label">Quantity</label>
+              <input type="text" name="quantity" id="quantity" class="form-control required"  placeholder="10">
+              <div class="invalid-feedback">
+                Quantity is required
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-control-label">Description</label>
+            <textarea name="description" id="description" class="form-control required" rows="4" placeholder="Product description"></textarea>
+            <div class="invalid-feedback">
+              Discription is required
+            </div>
+          </div>
+          
+          <hr class="horizontal dark">
+          
+          <h6 class="text-sm">Colour / Size / Price Variants</h6>
+          
+          <div id="variantBox">
+            <div class="row variant-row">
+              <div class="col-md-3 mb-3">
+                <input type="text" class="required form-control color" placeholder="Color">
                 <div class="invalid-feedback">
-                  Profit Zone is required
+                  colour is required
                 </div>
               </div>
               
               <div class="col-md-3 mb-3">
-                <label class="form-control-label">Quantity</label>
-                <input type="text" name="quantity" id="quantity" class="form-control required"  placeholder="10">
+                <input type="text" class="required form-control size" placeholder="Size">
                 <div class="invalid-feedback">
-                  Quantity is required
+                  size is required
                 </div>
               </div>
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-control-label">Description</label>
-              <textarea name="description" id="description" class="form-control required" rows="4" placeholder="Product description"></textarea>
-              <div class="invalid-feedback">
-                Discription is required
-              </div>
-            </div>
-            
-            <hr class="horizontal dark">
-            
-            <h6 class="text-sm">Colour / Size / Price Variants</h6>
-            
-            <div id="variantBox">
-              <div class="row variant-row">
-                <div class="col-md-3 mb-3">
-                  <input type="text" class="required form-control color" placeholder="Color">
-                  <div class="invalid-feedback">
-                  colour is required
-                </div>
-                </div>
-                
-                <div class="col-md-3 mb-3">
-                  <input type="text" class="required form-control size" placeholder="Size">
-                  <div class="invalid-feedback">
-                size is required
-              </div>
-                </div>
-                
-                <div class="col-md-3 mb-3 ">
-                  <input type="number" class="required form-control variant-price" placeholder="Price">
-                  <div class="invalid-feedback">
-                prize is required
-              </div>
-                </div>
-                
-                <div class="col-md-3 mb-3">
-                  <button type="button" class="btn bg-gradient-danger removeVariant w-100">
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <button type="button" id="addVariant" class="btn bg-gradient-info btn-sm">
-              + Add Variant
-            </button>
-            
-            <hr class="horizontal dark">
-            
-            <h6 class="text-sm">Upload Images</h6>
-            <p class="text-xs text-secondary mb-2">Maximum 7 images allowed</p>
-            
-            <div class="image-grid">
               
-              <!-- Upload Box -->
-              <div class="drop-area " id="dropArea">
+              <div class="col-md-3 mb-3 ">
+                <input type="number" class="required form-control variant-price" placeholder="Price">
+                <div class="invalid-feedback">
+                  prize is required
+                </div>
+              </div>
+              
+              <div class="col-md-3 mb-3">
+                <button type="button" class="btn bg-gradient-danger removeVariant w-100">
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <button type="button" id="addVariant" class="btn bg-gradient-info btn-sm">
+            + Add Variant
+          </button>
+          
+          <hr class="horizontal dark">
+          
+          <h6 class="text-sm">Upload Images</h6>
+          <p class="text-xs text-secondary mb-2">Maximum 7 images allowed</p>
+          
+          <div class="image-grid">
+            
+            <!-- Upload Box -->
+            <div class="drop-area " id="dropArea">
+              <input type="file" id="images" multiple accept="image/*">
+              
+              <div class="upload-content">
+                <h4>Upload Images</h4>
+                <p>Drag & drop here</p>
                 <input type="file" id="images" multiple accept="image/*">
                 
-                <div class="upload-content">
-                  <h4>Upload Images</h4>
-                  <p>Drag & drop here</p>
-                  <input type="file" id="images" multiple accept="image/*">
+                <label for="images" id="chooseBtn" class="choose-btn">
+                  Choose
+                </label>
+              </div>
+            </div>
+            
+            <!-- Uploaded Images Append Here -->
+            <div id="gallery"></div>
+            
+          </div>
+          
+          <p class="message" id="imageMsg"></p>
+          
+          <div class="row mt-3" id="previewBox"></div>
+          
+          <hr class="horizontal dark">
+          
+          <h6 class="text-sm">Live Product Preview</h6>
+          
+          <!-- <div class="card shadow-none border mt-3">
+            <div class="card-body">
+              <h6 id="previewName" class="mb-1">Product Name</h6>
+              <img id="previewImage" src="https://via.placeholder.com/300x300" value="" class="preview-image">
+              
+              <p id="previewDesc" class="text-sm text-secondary mb-2">Product description preview...</p>
+              <p class="text-sm font-weight-bold mb-1">
+                ₹<span id="previewPrice">0</span>
+              </p>
+              <p class="text-xs text-secondary">
+                Qty: <span id="previewQty">0</span>
+              </p>
+            </div>
+          </div> -->
+          <!-- <div class="card shadow-none border mt-3">
+            <div class="card-body">
+              
+              <div class="product-preview-box">
+                
+                <div class="main-image-box previewImage">
                   
-                  <label for="images" id="chooseBtn" class="choose-btn">
-                    Choose
-                  </label>
                 </div>
+                
+                <div class="info-section">
+                  <h4 id="previewName">Product Name</h4>
+                  
+                  <p id="previewDesc">
+                    Product description preview...
+                  </p>
+                  
+                  <h5>
+                    ₹<span id="previewPrice">0</span>
+                  </h5>
+                  
+                  <p>
+                    Qty : <span id="previewQty">0</span>
+                  </p>
+                </div>
+                
               </div>
               
-              <!-- Uploaded Images Append Here -->
-              <div id="gallery"></div>
+            </div>
+          </div> -->
+          <div class="card product-preview-card shadow-none border mt-3">
+            <div class="card-body">
+              
+              <div class="product-preview-box">
+                
+                <div class="main-image-box previewImage">
+                  <span class="discount-badge">
+                    <span id="previewDiscount">10</span>% OFF
+                  </span>
+                  
+                  <span class="stock-badge" id="previewStockBadge">In Stock</span>
+                  
+                  <img id="imageHolder" src=""  alt="No Image Available">
+                </div>
+                
+                <div class="info-section">
+                  <div class="preview-header">
+                    <span class="category-badge" id="previewCategory">Fashion</span>
+                    <span class="live-badge">Live Preview</span>
+                  </div>
+                  
+                  <h4 id="previewName">Product Name</h4>
+                  
+                  <p id="previewDesc">
+                    Product description preview...
+                  </p>
+                  <div class="price-box">
+                    <h3>₹<span id="previewPrice">0</span></h3>
+                    <span class="old-price">₹<span id="previewOldPrice">0</span></span>
+                  </div>
+                  
+                  <div class="preview-meta">
+                    <span>Qty: <b id="previewQty">0</b></span>
+                    <span>SKU: <b id="previewSku">SKU-001</b></span>
+                  </div>
+                  
+                  <div class="preview-tags">
+                    <span>Fast delivery</span>
+                    <span>Best seller</span>
+                    <span>Premium</span>
+                  </div>
+                </div>
+                
+              </div>
               
             </div>
-            
-            <p class="message" id="imageMsg"></p>
-            
-            <div class="row mt-3" id="previewBox"></div>
-            
-            <hr class="horizontal dark">
-            
-            <h6 class="text-sm">Live Product Preview</h6>
-            
-            <!-- <div class="card shadow-none border mt-3">
-              <div class="card-body">
-                <h6 id="previewName" class="mb-1">Product Name</h6>
-                <img id="previewImage" src="https://via.placeholder.com/300x300" value="" class="preview-image">
-                
-                <p id="previewDesc" class="text-sm text-secondary mb-2">Product description preview...</p>
-                <p class="text-sm font-weight-bold mb-1">
-                  ₹<span id="previewPrice">0</span>
-                </p>
-                <p class="text-xs text-secondary">
-                  Qty: <span id="previewQty">0</span>
-                </p>
-              </div>
-            </div> -->
-            <!-- <div class="card shadow-none border mt-3">
-              <div class="card-body">
-                
-                <div class="product-preview-box">
-                  
-                  <div class="main-image-box previewImage">
-                    
-                  </div>
-                  
-                  <div class="info-section">
-                    <h4 id="previewName">Product Name</h4>
-                    
-                    <p id="previewDesc">
-                      Product description preview...
-                    </p>
-                    
-                    <h5>
-                      ₹<span id="previewPrice">0</span>
-                    </h5>
-                    
-                    <p>
-                      Qty : <span id="previewQty">0</span>
-                    </p>
-                  </div>
-                  
-                </div>
-                
-              </div>
-            </div> -->
-            <div class="card product-preview-card shadow-none border mt-3">
-              <div class="card-body">
-                
-                <div class="product-preview-box">
-                  
-                  <div class="main-image-box previewImage">
-                    <span class="discount-badge">
-                      <span id="previewDiscount">10</span>% OFF
-                    </span>
-                    
-                    <span class="stock-badge" id="previewStockBadge">In Stock</span>
-                    
-                    <img id="imageHolder" src=""  alt="No Image Available">
-                  </div>
-                  
-                  <div class="info-section">
-                    <div class="preview-header">
-                      <span class="category-badge" id="previewCategory">Fashion</span>
-                      <span class="live-badge">Live Preview</span>
-                    </div>
-                    
-                    <h4 id="previewName">Product Name</h4>
-                    
-                    <p id="previewDesc">
-                      Product description preview...
-                    </p>
-                    <div class="price-box">
-                      <h3>₹<span id="previewPrice">0</span></h3>
-                      <span class="old-price">₹<span id="previewOldPrice">0</span></span>
-                    </div>
-                    
-                    <div class="preview-meta">
-                      <span>Qty: <b id="previewQty">0</b></span>
-                      <span>SKU: <b id="previewSku">SKU-001</b></span>
-                    </div>
-                    
-                    <div class="preview-tags">
-                      <span>Fast delivery</span>
-                      <span>Best seller</span>
-                      <span>Premium</span>
-                    </div>
-                  </div>
-                  
-                </div>
-                
-              </div>
-            </div>
-            <div class="text-end mt-4">
-              <button type="submit" class="btn bg-gradient-primary">
-                Save Product
-              </button>
-            </div>
-            
-          </form>
-        </div>
+          </div>
+          <div class="text-end mt-4">
+            <button type="submit" class="btn bg-gradient-primary">
+              Save Product
+            </button>
+          </div>
+          
+        </form>
       </div>
     </div>
   </div>
-  
-  {% endblock %}
+</div>
+
+{% endblock %}

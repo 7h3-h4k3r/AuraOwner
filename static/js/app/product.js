@@ -138,6 +138,20 @@ function focusErr(obj){
   obj.focus()
 }
 
+function setProductToTable(uuid){
+    
+    const formData = new FormData();
+    formData.append(uuid)
+    $.post("/api/v1/set-product", formData, function(response){
+      $("#set-product").html(response);
+    });
+}
+
+function setProductToTable(uuid){
+  $.post("/api/v1/set-product", { uuid: uuid }, function(response){
+    $("#set-product").html(response);
+  });
+}
 
 function send(formData){
   $.ajax({
@@ -150,31 +164,24 @@ function send(formData){
   .done(function(response) {
 
     if(response.status === "success"){
+      setProductToTable(response.uuid);
       showToast(response.message, "success");
+      
     }else{
       showToast(response.message || "Something went wrong", "warning");
     }
-    
-    $("#productForm")[0].reset();
 
+    $("#productForm")[0].reset();
     selectedImages = [];
     $("#gallery").empty();
     $("#imageHolder").attr("src", "");
   })
   .fail(function(xhr) {
-
-    let message = "Server Error";
-
-    if(xhr.responseJSON?.message){
-      message = xhr.responseJSON.message;
-    }
-
+    let message = xhr.responseJSON?.message || "Server Error";
     showToast(message, "danger");
     console.error(xhr);
-
   });
 }
-
 $(document).ready(function () {
   let selectedImages = [];
 
@@ -364,7 +371,7 @@ $(document).ready(function () {
         $("#dropArea").removeClass("required")
         return;
     }
-
+    selectedImages =[]
     send(formData)
   });
 });

@@ -12,6 +12,14 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def get_products(page=1, limit=10):
+    product_value = db.product.find() \
+        .sort("_id", -1) \
+        .skip((page - 1) * limit) \
+        .limit(limit)
+    return list(product_value)
+
+    
 def validate_product_form(request):
     errors = {}
 

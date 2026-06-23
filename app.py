@@ -5,12 +5,18 @@ import uuid
 import json
 from blueprints.authentication import auth 
 from blueprints.dialog import dialog
+from src.Database import Mconn
 from blueprints.catogory import catogory 
 from blueprints.products import product
 app = Flask(__name__)
 
+db = Mconn.get()
 
-
+def get_products(page=1, limit=10):
+    return db.product.find() \
+        .sort("_id", -1) \
+        .skip((page - 1) * limit) \
+        .limit(limit)
 
  
 app.secret_key= 'os.getenv(\'SECRET_KEY\')'
@@ -40,7 +46,8 @@ def signup():
 @app.route('/shirts')
 def product():
     if session.get('authenticated'):
-        return render_template('productlist.html')
+        product = list(get_products())
+        return render_template('productlist.html',products=product)
     return render_template('login.html')
 
 
