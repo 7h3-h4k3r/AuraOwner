@@ -140,18 +140,39 @@ function focusErr(obj){
 
 
 function send(formData){
-  $.post({
-      url: "/api/v1/add-product",
-      data: formData,
-      processData: false,
-      contentType: false
-    })
-    .done(function(response) {
-        console.log(response);
-    })
-    .fail(function(error) {
-        console.error(error);
-    });
+  $.ajax({
+    url: "/api/v1/add-product",
+    type: "POST",
+    data: formData,
+    processData: false,
+    contentType: false
+  })
+  .done(function(response) {
+
+    if(response.status === "success"){
+      showToast(response.message, "success");
+    }else{
+      showToast(response.message || "Something went wrong", "warning");
+    }
+    
+    $("#productForm")[0].reset();
+
+    selectedImages = [];
+    $("#gallery").empty();
+    $("#imageHolder").attr("src", "");
+  })
+  .fail(function(xhr) {
+
+    let message = "Server Error";
+
+    if(xhr.responseJSON?.message){
+      message = xhr.responseJSON.message;
+    }
+
+    showToast(message, "danger");
+    console.error(xhr);
+
+  });
 }
 
 $(document).ready(function () {
