@@ -141,7 +141,7 @@ function focusErr(obj){
 
 function send(formData){
   $.post({
-      url: "/add-product",
+      url: "/api/v1/add-product",
       data: formData,
       processData: false,
       contentType: false

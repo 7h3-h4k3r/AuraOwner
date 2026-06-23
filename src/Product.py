@@ -1,5 +1,6 @@
 from mongogettersetter import MongoGetterSetter
-from Database import Mconn
+from .Database import Mconn
+from uuid import uuid4
 
 db = Mconn.get()
 
@@ -9,7 +10,7 @@ class ProductCollection(metaclass=MongoGetterSetter):
         self._filter_query =  {"$or" :
             [   
                 {"id":id} , 
-                {"uid":id}
+                {"uuid":id}
             ]
         }
         
@@ -18,31 +19,21 @@ class Product:
     def __init__(self,id):
         try:
             self.collection = ProductCollection(id)
-            self.id = self.collection.id
-        except:
-            raise('Database Error')
+            self.id = self.collection._id
+        except Exception as e:
+            raise Exception(f"Database Error: {e}")
     
 
     @staticmethod
-    def put(product_name , username , catogory_id , product_size , quantity ,prize):
+    def put(product_data):
         
-        uid = str(uuid4())
+        product_uuid = str(uuid4())
 
-        insert_data = {
-            'uid' : uid,
-            'who_is' : username,
-            'product_name' : product_name,
-            'catogory_uid' : catogory_id,
-            'product_size' : product_size,
-            'quantity' : quantity,
-            'prize' : prize,
-            'stock_in' : datetime.now(),
-        }
-
-        result = db.product.insert_one(insert_data)
+        product_data['uuid'] = product_uuid
+        result = db.product.insert_one(product_data)
         
-        if not result:
+        if not result.inserted_id:
             return False 
         
-        return Product(uid)
+        return Product(product_uuid)
 
