@@ -1,0 +1,36 @@
+.soft-toast{
+    min-width:280px;
+    padding:15px 20px;
+    margin-bottom:15px;
+    border-radius:16px;
+    background:#f3f4f6;
+    box-shadow:8px 8px 18px #d1d5db,
+               -8px -8px 18px #ffffff;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    animation:slideIn .3s ease;
+}
+
+.soft-toast.success{
+    border-left:4px solid #22c55e;
+}
+
+.soft-toast.warning{
+    border-left:4px solid #f59e0b;
+}
+
+.soft-toast.error{
+    border-left:4px solid #ef4444;
+}
+
+@keyframes slideIn{
+    from{
+        opacity:0;
+        transform:translateX(100%);
+    }
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}

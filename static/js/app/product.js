@@ -29,62 +29,130 @@ function validate() {
     return isValid;
 }
 
-function validate_form_data(formData){
+function validate_form_data(formData) {
+
+    const price = Number(formData.get("price"));
+    const quantity = Number(formData.get("quantity"));
 
     let obj;
 
-    if (formData.get("name").length < 3 ){
-        obj = $("#productName")
-    }else if (formData.get("description").length < 25){
-        obj = $("#description")
-    }else if (formData.get("price").length < 3){
-        obj = $("#price")
-    }else if(formData.get("quantity").length < 1){
-        obj = $("#quantity")
-    }
-    else{
+    if (formData.get("name").trim().length < 3) {
+
+        obj = $("#productName");
+        showToast("Product name must be at least 3 characters.", "warning");
+
+    } else if (formData.get("description").trim().length < 25) {
+
+        obj = $("#description");
+        showToast("Description must be at least 25 characters.", "warning");
+
+    } else if (
+        formData.get("price").trim().length < 1 ||
+        isNaN(price) ||
+        price <= 0
+    ) {
+
+        obj = $("#price");
+        showToast("Please enter a valid product price.", "warning");
+
+    } else if (
+        formData.get("quantity").trim().length < 1 ||
+        isNaN(quantity) ||
+        quantity <= 0
+    ) {
+
+        obj = $("#quantity");
+        showToast("Please enter a valid quantity.", "warning");
+
+    } else {
+
         return 0;
-    }  
+    }
+
     return obj;
 }
 
+
 function validate_variant() {
     let invalidField = null;
+    let variants = [];
 
     $(".variant-row").each(function () {
+
         const color = $(this).find(".color").val();
-        const size  = $(this).find(".size").val();
+        const size = $(this).find(".size").val();
         const price = $(this).find(".variant-price").val();
+
+        let row = $(this).index() + 1;
 
         if (color.trim().length < 3) {
             invalidField = $(this).find(".color");
-            return false; // break .each()
+            showToast(`Variant ${row}: Invalid color name.`, "warning");
+            return false;
         }
 
         if (size.trim().length !== 1) {
             invalidField = $(this).find(".size");
+            showToast(`Variant ${row}: Invalid size.`, "warning");
             return false;
         }
 
         if (price.trim().length < 3) {
             invalidField = $(this).find(".variant-price");
+            showToast(`Variant ${row}: Invalid price.`, "warning");
             return false;
         }
+
+        variants.push({
+            color: color,
+            size: size,
+            price: price
+        });
+
     });
 
-    return invalidField;
+    if (invalidField) {
+        return {
+            valid: false,
+            field: invalidField
+        };
+    }
+
+    return {
+        valid: true,
+        variants: variants
+    };
 }
 
 function imageValidate(images) {
+
     if (images.length < 5){
-        console.log("false")
         return false
     }
-    console.log("true")
     return true
-
 }
 
+function focusErr(obj){
+  obj.addClass("is-invalid")
+  obj.siblings("div").hide();
+  obj.focus()
+}
+
+
+function send(formData){
+  $.post({
+      url: "/add-product",
+      data: formData,
+      processData: false,
+      contentType: false
+    })
+    .done(function(response) {
+        console.log(response);
+    })
+    .fail(function(error) {
+        console.error(error);
+    });
+}
 
 $(document).ready(function () {
   let selectedImages = [];
@@ -238,11 +306,12 @@ $(document).ready(function () {
   $("#productForm").on("submit", function (e) {
     e.preventDefault();
 
-    const formData = new FormData();
     if(!validate()){
       scrollToInvalid();
       return;
     }
+  
+    const formData = new FormData();
     formData.append("name", $("#productName").val());
     formData.append("description", $("#description").val());
     formData.append("price", $("#price").val());
@@ -252,50 +321,29 @@ $(document).ready(function () {
       formData.append("images[]", file);
     });
 
-    // const variants = [];
-
-    // $(".variant-row").each(function () {
-    //   variants.push({
-    //     color: $(this).find(".color").val(),
-    //     size: $(this).find(".size").val(),
-    //     price: $(this).find(".variant-price").val()
-    //   });
-    // });
-
-    // formData.append("variants", JSON.stringify(variants));
     obj = validate_form_data(formData)
     if (obj!=0){
-        obj.addClass("is-invalid")
-        obj.siblings("div").hide();
-        scrollToInvalid();
-        return;
-    }
-    console.log("from data validate finished")
-    obj = validate_variant(formData)
-    console.log(obj)
-    if (obj!=null){
-        obj.addClass("is-invalid")
-        obj.siblings("div").hide();
-        scrollToInvalid();
+        focusErr(obj)
         return;
     }
 
-    obj = imageValidate(formData.getAll("images[]"))
-    if(obj==false){
-        console.log("image is not set")
+    const result  = validate_variant();
+    if (!result.valid){
+        focusErr(result.field)
         return;
     }
-    $.post({
-    url: "/add-product",
-    data: formData,
-    processData: false,
-    contentType: false
-  })
-  .done(function(response) {
-      console.log(response);
-  })
-  .fail(function(error) {
-      console.error(error);
-  });
+    formData.append("variants", JSON.stringify(result.variants));
+
+    obj=  imageValidate(formData.getAll("images[]"))
+
+    if(obj==false){
+        $("#dropArea").addClass("required")
+        showToast("Product images not Found","warning")
+        scrollToInvalid()
+        $("#dropArea").removeClass("required")
+        return;
+    }
+
+    send(formData)
   });
 });
