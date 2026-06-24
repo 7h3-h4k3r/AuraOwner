@@ -30,7 +30,7 @@ class Product:
         product_uuid = str(uuid4())
 
         product_data['uuid'] = product_uuid
-        product_data['staus'] = "New arrived"
+        product_data['status'] = True
         result = db.product.insert_one(product_data)
         
         if not result.inserted_id:

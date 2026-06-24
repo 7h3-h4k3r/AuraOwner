@@ -149,7 +149,7 @@ function setProductToTable(uuid){
 
 function setProductToTable(uuid){
   $.post("/api/v1/set-product", { uuid: uuid }, function(response){
-    $("#set-product").html(response);
+    $("#set-product").append(response);
   });
 }
 
