@@ -38,3 +38,19 @@ class Product:
         
         return Product(product_uuid)
 
+
+    @staticmethod
+    def get(page):
+        #code clean up
+        limit = 10
+
+        products = (
+        db.product.find(
+            {},
+            {"variants": 0}
+        )
+        .sort("_id", -1)
+        .skip((page - 1) * limit)
+        .limit(limit)
+    )
+        return products

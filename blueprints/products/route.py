@@ -25,22 +25,21 @@ def get_catogory_ui():
     obj_catogory = catogory(uid)
     return render_template('dialogs/catogory_list.html',session=session,details=obj_catogory)
 
+
 @product.route("/get-product", methods=["POST"])
 def getProduct():
     page = int(request.form.get("page", 1))
-    limit = 10
+    print(page)
+    product_list = Product.get(page)
+    products = list(product_list)
 
-    products = (
-        db.product.find()
-        .sort("_id", -1)
-        .skip((page - 1) * limit)
-        .limit(limit)
-    )
+    for product in products:
+        product["_id"] = str(product["_id"])
 
-    return render_template(
-        "table/product.html",
-        products=list(products)
-    )
+    return jsonify({
+        "products": products
+    })
+
 
 
 
