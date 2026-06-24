@@ -1,26 +1,31 @@
 
 function setData(product_list) {
+  
+  
+  if (product_list.length===0){
+    showToast("You have reached the end of the product list.", "info");
+    return false
+  }
+  $("#set-product").empty();
+  $.each(product_list, function(index, product) {
     
-
-    if (product_list.length===0){
-      showToast("You have reached the end of the product list.", "info");
-      return false
+    let badge
+  
+    let checked
+    if (product.status=="true"){
+      checked = 'checked'
+      badge = '<span class="badge badge-sm bg-gradient-success">Active</span>'
+    }else{
+      checked = ' '
+      badge = '<span class="badge badge-sm bg-gradient-secondary">Inactive</span>';
     }
-    $("#set-product").empty();
-    $.each(product_list, function(index, product) {
-
-        const badge = product.status
-            ? '<span class="badge badge-sm bg-gradient-success">Active</span>'
-            : '<span class="badge badge-sm bg-gradient-secondary">Inactive</span>';
-
-        const checked = product.status ? 'checked' : '';
-
-        $("#set-product").append(`
+    
+    $("#set-product").append(`
             <tr>
-
+      
                 <td>
                     <div class="d-flex px-2 py-1">
-
+      
                         <div>
                             <img
                                 src="${'static/' +product.images?.[0] || ''}"
@@ -28,50 +33,50 @@ function setData(product_list) {
                                 alt="${product.name}"
                             >
                         </div>
-
+      
                         <div class="d-flex flex-column justify-content-center">
                             <h6 class="mb-0 text-sm">${product.name}</h6>
                             <p class="text-xs text-secondary mb-0">
                                 ${product.uuid}
                             </p>
                         </div>
-
+      
                     </div>
                 </td>
-
+      
                 <td>
                     <p class="text-xs font-weight-bold mb-0">
                         ₹${product.price}
                     </p>
-
+      
                     <p class="text-xs text-secondary mb-0">
                         Qty: ${product.quantity}
                     </p>
                 </td>
-
+      
                 <td class="align-middle text-center text-sm">
                     ${badge}
                 </td>
-
+      
                 <td class="align-middle text-center">
-
+      
                     <div class="d-flex justify-content-center align-items-center h-100">
-
+      
                         <div class="form-check form-switch m-0">
-
+      
                             <input
                                 class="form-check-input product-status"
                                 type="checkbox"
                                 data-uuid="${product.uuid}"
                                 ${checked}
                             >
-
+      
                         </div>
-
+      
                     </div>
-
+      
                 </td>
-
+      
                 <td class="align-middle">
                     <a
                         href="/product/${product.uuid}"
@@ -80,14 +85,14 @@ function setData(product_list) {
                         Edit
                     </a>
                 </td>
-
+      
             </tr>
         `);
     });
-
+    
     return true
-}
-  function scrollToInvalid() {
+  }
+function scrollToInvalid() {
     const firstInvalid = $(".is-invalid").first();
     
     if (firstInvalid.length) {
@@ -225,19 +230,15 @@ function setData(product_list) {
     obj.siblings("div").hide();
     obj.focus()
   }
-  
-  function setProductToTable(uuid){
-    
-    const formData = new FormData();
-    formData.append(uuid)
-    $.post("/api/v1/set-product", formData, function(response){
-      $("#set-product").html(response);
-    });
-  }
+
   
   function setProductToTable(uuid){
     $.post("/api/v1/set-product", { uuid: uuid }, function(response){
-      $("#set-product").append(response);
+      $("#set-product").prepend(response);
+      
+      if ($("#set-product tr").length > 10) {
+        $("#set-product tr:last").remove();
+      }
     });
   }
   
@@ -319,6 +320,8 @@ function setData(product_list) {
       handleFiles(files);
     });
     
+    
+    
     function handleFiles(files) {
       const newFiles = Array.from(files);
       
@@ -345,42 +348,44 @@ function setData(product_list) {
             `);
             }
             $("#gallery").append(`
-          <div class="image-card">
-            <button type="button" class="remove-btn">×</button>
-            <img src="${e.target.result}">
-          </div>
-        `);
-              
+                <div class="image-card">
+                  <button type="button" class="remove-btn">×</button>
+                  <img src="${e.target.result}">
+                </div>
+              `);
             };
             
             reader.readAsDataURL(file);
             
-          });
+            });
           
           $("#imageMsg").text("");
         }
+    
+    
+      
+      
+    $("#gallery").on("click", ".remove-btn", function () {
         
-        $("#gallery").on("click", ".remove-btn", function () {
-          
-          const card = $(this).closest(".image-card");
-          const removedSrc = card.find("img").attr("src");
-          
-          selectedImages.splice(card.index(), 1);
-          
-          card.remove();
-          
-          if ($(".previewImage img").attr("src") === removedSrc) {
-            
-            $(".previewImage img").attr(
-              "src",
-              $("#gallery .image-card img").first().attr("src")
-              || "https://via.placeholder.com/300x300?text=No+Image"
-            );
-          }
-        });
+        const card = $(this).closest(".image-card");
+        const removedSrc = card.find("img").attr("src");
         
-        $("#addVariant").on("click", function () {
-          $("#variantBox").append(`
+        selectedImages.splice(card.index(), 1);
+        
+        card.remove();
+        
+        if ($(".previewImage img").attr("src") === removedSrc) {
+          
+          $(".previewImage img").attr(
+            "src",
+            $("#gallery .image-card img").first().attr("src")
+            || "https://via.placeholder.com/300x300?text=No+Image"
+          );
+        }
+      });
+      
+      $("#addVariant").on("click", function () {
+        $("#variantBox").append(`
       <div class="row variant-row">
                 <div class="col-md-3 mb-3">
                   <input type="text" class="required form-control color" placeholder="Color">
@@ -409,83 +414,119 @@ function setData(product_list) {
                   </button>
                 </div>
               </div>
-    `);
-          });
-          
-          $("#variantBox").on("click", ".removeVariant", function () {
-            if ($("#variantBox .variant-row").length > 1) {
-              $(this).closest(".variant-row").remove();
-            }
-            
-          });
-          
-          $("#productForm").on("submit", function (e) {
-            e.preventDefault();
-            
-            if(!validate()){
-              scrollToInvalid();
-              return;
-            }
-            
-            const formData = new FormData();
-            formData.append("name", $("#productName").val());
-            formData.append("description", $("#description").val());
-            formData.append("price", $("#price").val());
-            formData.append("quantity", $("#quantity").val());
-            
-            selectedImages.forEach(function (file) {
-              formData.append("images[]", file);
-            });
-            
-            obj = validate_form_data(formData)
-            if (obj!=0){
-              focusErr(obj)
-              return;
-            }
-            
-            const result  = validate_variant();
-            if (!result.valid){
-              focusErr(result.field)
-              return;
-            }
-            formData.append("variants", JSON.stringify(result.variants));
-            
-            obj=  imageValidate(formData.getAll("images[]"))
-            
-            if(obj==false){
-              $("#dropArea").addClass("required")
-              showToast("Product images not Found","warning")
-              scrollToInvalid()
-              $("#dropArea").removeClass("required")
-              return;
-            }
-            selectedImages =[]
-            send(formData)
-          });
-          
-          $("#prevBtn").on("click",function(){
-          
-            if (list_page <= 1){
-              showToast("You have reached the end of the product list.", "info");
-              return;
-            }
-            list_page -=1
-            $.post("/api/v1/get-product", { page: list_page }, function(response){
-              console.log(response.products)
-              setData(response.products)
-               
-            })
-          })
-          
-          $("#nextBtn").on("click",function(){
-            list_page +=1
-            $.post("/api/v1/get-product", { page: list_page }, function(response){
-              console.log(response.products)
-              if (setData(response.products) === false){
-                list_page-=1
-              }
-            })
-          })
-          
+                `);
+      });
+        
+        $("#variantBox").on("click", ".removeVariant", function () {
+          if ($("#variantBox .variant-row").length > 1) {
+            $(this).closest(".variant-row").remove();
+          }
           
         });
+        
+        $("#productForm").on("submit", function (e) {
+          e.preventDefault();
+          
+          if(!validate()){
+            scrollToInvalid();
+            return;
+          }
+          
+          const formData = new FormData();
+          formData.append("name", $("#productName").val());
+          formData.append("description", $("#description").val());
+          formData.append("price", $("#price").val());
+          formData.append("quantity", $("#quantity").val());
+          
+          selectedImages.forEach(function (file) {
+            formData.append("images[]", file);
+          });
+          
+          obj = validate_form_data(formData)
+          if (obj!=0){
+            focusErr(obj)
+            return;
+          }
+          
+          const result  = validate_variant();
+          if (!result.valid){
+            focusErr(result.field)
+            return;
+          }
+          formData.append("variants", JSON.stringify(result.variants));
+          
+          obj=  imageValidate(formData.getAll("images[]"))
+          
+          if(obj==false){
+            $("#dropArea").addClass("required")
+            showToast("Product images not Found","warning")
+            scrollToInvalid()
+            $("#dropArea").removeClass("required")
+            return;
+          }
+          selectedImages =[]
+          send(formData)
+        });
+       
+     
+$("#prevBtn").on("click",function(){
+  if (list_page <= 1){
+    showToast("You have reached the end of the product list.", "info");
+    return;
+  }
+  list_page -=1
+  $.post("/api/v1/get-product", { page: list_page }, function(response){
+    console.log(response.products)
+    setData(response.products)
+    })
+  })
+$("#nextBtn").on("click",function(){
+
+  list_page +=1
+  $.post("/api/v1/get-product", { page: list_page }, function(response){
+  console.log(response.products)
+  if (setData(response.products) === false){
+    list_page-=1
+    }
+  })
+})
+$("#set-product").on("change", ".product-status", function () {
+  
+    const checkbox = $(this);
+    const status = checkbox.prop("checked");
+    const uuid = checkbox.data("uuid");
+
+    $.post("/api/v1/stock", {
+        uuid: uuid,
+        status: status
+    }, function (response) {
+
+        if (response.status) {
+
+            showToast(response.message, "success");
+
+            const badge = checkbox.closest("tr").find(".badge");
+
+            if (status) {
+                badge
+                    .removeClass("bg-gradient-secondary")
+                    .addClass("bg-gradient-success")
+                    .text("Active");
+            } else {
+                badge
+                    .removeClass("bg-gradient-success")
+                    .addClass("bg-gradient-secondary")
+                    .text("Inactive");
+            }
+
+        } else {
+            showToast(response.errors, "warning");
+        }
+
+    });
+
+});
+
+ });
+
+    

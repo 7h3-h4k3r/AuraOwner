@@ -47,6 +47,7 @@ def signup():
 def product():
     if session.get('authenticated'):
         product = list(get_products())
+     
         return render_template('productlist.html',products=product)
     return render_template('login.html')
 

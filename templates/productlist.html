@@ -66,13 +66,13 @@
                   </td>
                   
                   <td class="align-middle text-center text-sm">
-                    {% if product.status %}
+                    {% if product.status == "true"%}
                     <span class="badge badge-sm bg-gradient-success">
-                      Active
+                      In-Live
                     </span>
                     {% else %}
                     <span class="badge badge-sm bg-gradient-secondary">
-                      Inactive
+                      Non-Live
                     </span>
                     {% endif %}
                   </td>
@@ -87,7 +87,7 @@
                         class="form-check-input product-status"
                         type="checkbox"
                         data-uuid="{{ product.uuid }}"
-                        {% if product.status %}checked{% endif %}
+                        {% if product.status == "true" %}checked{% endif %}
                         >
                         
                       </div>

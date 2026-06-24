@@ -32,13 +32,13 @@
     </td>
     
     <td class="align-middle text-center text-sm">
-        {% if product.collection.status %}
+        {% if product.collection.status == "true" %}
         <span class="badge badge-sm bg-gradient-success">
-            Active
+            In-Live
         </span>
         {% else %}
         <span class="badge badge-sm bg-gradient-secondary">
-            Inactive
+            Non-Live
         </span>
         {% endif %}
     </td>

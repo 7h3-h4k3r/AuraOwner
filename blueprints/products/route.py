@@ -40,6 +40,29 @@ def getProduct():
         "products": products
     })
 
+@product.route("/stock",methods=["POST"])
+def setStock():
+    uuid = request.form.get("uuid", "").strip()
+    status = request.form.get("status","").strip()
+    if not uuid and not status:
+        return jsonify({
+            "status" : "error",
+            "errors" : "somewent is wrong"
+        })
+
+    try:
+        pro_obj = Product(uuid)
+        pro_obj.collection.status = status
+    except:
+        return jsonify({
+            "errors" : "server side database error"
+        },500)
+
+    return jsonify({
+        "status" : True,
+        "message" :"successfully updated"
+    })
+
 
 
 
