@@ -1,16 +1,19 @@
 
-function setData(product_list) {
+function setData(product_list,del_state=false) {
   
-  
-  if (product_list.length===0){
-    showToast("You have reached the end of the product list.", "info");
-    return false
+  if (del_state === false){
+    if (product_list.length===0){
+        showToast("You have reached the end of the product list.", "info");
+        return false
+    }
+    $("#set-product").empty();
   }
-  $("#set-product").empty();
+
+  
   $.each(product_list, function(index, product) {
     
     let badge
-  
+    
     let checked
     if (product.status=="true"){
       checked = 'checked'
@@ -57,7 +60,7 @@ function setData(product_list) {
                 <td class="align-middle text-center text-sm">
                     ${badge}
                 </td>
-      
+                
                 <td class="align-middle text-center">
       
                     <div class="d-flex justify-content-center align-items-center h-100">
@@ -76,6 +79,14 @@ function setData(product_list) {
                     </div>
       
                 </td>
+                 <td class="align-middle text-center">
+                    <button type="button"
+                            id="${product.uuid}"
+                            class="btn btn-link btn-delete text-danger p-2"
+                            title="Delete">
+                        <i class="fas fa-trash-alt text-lg"></i>
+                    </button>
+                </td>
       
                 <td class="align-middle">
                     <a
@@ -92,7 +103,7 @@ function setData(product_list) {
     
     return true
   }
-function scrollToInvalid() {
+  function scrollToInvalid() {
     const firstInvalid = $(".is-invalid").first();
     
     if (firstInvalid.length) {
@@ -230,7 +241,7 @@ function scrollToInvalid() {
     obj.siblings("div").hide();
     obj.focus()
   }
-
+  
   
   function setProductToTable(uuid){
     $.post("/api/v1/set-product", { uuid: uuid }, function(response){
@@ -357,35 +368,35 @@ function scrollToInvalid() {
             
             reader.readAsDataURL(file);
             
-            });
+          });
           
           $("#imageMsg").text("");
         }
-    
-    
-      
-      
-    $("#gallery").on("click", ".remove-btn", function () {
         
-        const card = $(this).closest(".image-card");
-        const removedSrc = card.find("img").attr("src");
         
-        selectedImages.splice(card.index(), 1);
         
-        card.remove();
         
-        if ($(".previewImage img").attr("src") === removedSrc) {
+        $("#gallery").on("click", ".remove-btn", function () {
           
-          $(".previewImage img").attr(
-            "src",
-            $("#gallery .image-card img").first().attr("src")
-            || "https://via.placeholder.com/300x300?text=No+Image"
-          );
-        }
-      });
-      
-      $("#addVariant").on("click", function () {
-        $("#variantBox").append(`
+          const card = $(this).closest(".image-card");
+          const removedSrc = card.find("img").attr("src");
+          
+          selectedImages.splice(card.index(), 1);
+          
+          card.remove();
+          
+          if ($(".previewImage img").attr("src") === removedSrc) {
+            
+            $(".previewImage img").attr(
+              "src",
+              $("#gallery .image-card img").first().attr("src")
+              || "https://via.placeholder.com/300x300?text=No+Image"
+            );
+          }
+        });
+        
+        $("#addVariant").on("click", function () {
+          $("#variantBox").append(`
       <div class="row variant-row">
                 <div class="col-md-3 mb-3">
                   <input type="text" class="required form-control color" placeholder="Color">
@@ -415,118 +426,152 @@ function scrollToInvalid() {
                 </div>
               </div>
                 `);
-      });
-        
-        $("#variantBox").on("click", ".removeVariant", function () {
-          if ($("#variantBox .variant-row").length > 1) {
-            $(this).closest(".variant-row").remove();
-          }
-          
-        });
-        
-        $("#productForm").on("submit", function (e) {
-          e.preventDefault();
-          
-          if(!validate()){
-            scrollToInvalid();
-            return;
-          }
-          
-          const formData = new FormData();
-          formData.append("name", $("#productName").val());
-          formData.append("description", $("#description").val());
-          formData.append("price", $("#price").val());
-          formData.append("quantity", $("#quantity").val());
-          
-          selectedImages.forEach(function (file) {
-            formData.append("images[]", file);
           });
           
-          obj = validate_form_data(formData)
-          if (obj!=0){
-            focusErr(obj)
-            return;
-          }
-          
-          const result  = validate_variant();
-          if (!result.valid){
-            focusErr(result.field)
-            return;
-          }
-          formData.append("variants", JSON.stringify(result.variants));
-          
-          obj=  imageValidate(formData.getAll("images[]"))
-          
-          if(obj==false){
-            $("#dropArea").addClass("required")
-            showToast("Product images not Found","warning")
-            scrollToInvalid()
-            $("#dropArea").removeClass("required")
-            return;
-          }
-          selectedImages =[]
-          send(formData)
-        });
-       
-     
-$("#prevBtn").on("click",function(){
-  if (list_page <= 1){
-    showToast("You have reached the end of the product list.", "info");
-    return;
-  }
-  list_page -=1
-  $.post("/api/v1/get-product", { page: list_page }, function(response){
-    console.log(response.products)
-    setData(response.products)
-    })
-  })
-$("#nextBtn").on("click",function(){
-
-  list_page +=1
-  $.post("/api/v1/get-product", { page: list_page }, function(response){
-  console.log(response.products)
-  if (setData(response.products) === false){
-    list_page-=1
-    }
-  })
-})
-$("#set-product").on("change", ".product-status", function () {
-  
-    const checkbox = $(this);
-    const status = checkbox.prop("checked");
-    const uuid = checkbox.data("uuid");
-
-    $.post("/api/v1/stock", {
-        uuid: uuid,
-        status: status
-    }, function (response) {
-
-        if (response.status) {
-
-            showToast(response.message, "success");
-
-            const badge = checkbox.closest("tr").find(".badge");
-
-            if (status) {
-                badge
-                    .removeClass("bg-gradient-secondary")
-                    .addClass("bg-gradient-success")
-                    .text("Active");
-            } else {
-                badge
-                    .removeClass("bg-gradient-success")
-                    .addClass("bg-gradient-secondary")
-                    .text("Inactive");
+          $("#variantBox").on("click", ".removeVariant", function () {
+            if ($("#variantBox .variant-row").length > 1) {
+              $(this).closest(".variant-row").remove();
             }
-
-        } else {
-            showToast(response.errors, "warning");
-        }
-
-    });
-
-});
-
- });
-
-    
+            
+          });
+          
+          $("#productForm").on("submit", function (e) {
+            e.preventDefault();
+            
+            if(!validate()){
+              scrollToInvalid();
+              return;
+            }
+            
+            const formData = new FormData();
+            formData.append("name", $("#productName").val());
+            formData.append("description", $("#description").val());
+            formData.append("price", $("#price").val());
+            formData.append("quantity", $("#quantity").val());
+            
+            selectedImages.forEach(function (file) {
+              formData.append("images[]", file);
+            });
+            
+            obj = validate_form_data(formData)
+            if (obj!=0){
+              focusErr(obj)
+              return;
+            }
+            
+            const result  = validate_variant();
+            if (!result.valid){
+              focusErr(result.field)
+              return;
+            }
+            formData.append("variants", JSON.stringify(result.variants));
+            
+            obj=  imageValidate(formData.getAll("images[]"))
+            
+            if(obj==false){
+              $("#dropArea").addClass("required")
+              showToast("Product images not Found","warning")
+              scrollToInvalid()
+              $("#dropArea").removeClass("required")
+              return;
+            }
+            selectedImages =[]
+            send(formData)
+          });
+          
+          
+          $("#prevBtn").on("click",function(){
+            if (list_page <= 1){
+              showToast("You have reached the end of the product list.", "info");
+              return;
+            }
+            list_page -=1
+            $.post("/api/v1/get-product", { page: list_page }, function(response){
+              console.log(response.products)
+              setData(response.products)
+            })
+          })
+          $("#nextBtn").on("click",function(){
+            
+            list_page +=1
+            $.post("/api/v1/get-product", { page: list_page }, function(response){
+              console.log(response.products)
+              if (setData(response.products) === false){
+                list_page-=1
+              }
+            })
+          })
+          $("#set-product").on("change", ".product-status", function () {
+            
+            const checkbox = $(this);
+            const status = checkbox.prop("checked");
+            const uuid = checkbox.data("uuid");
+            
+            $.post("/api/v1/stock", {
+              uuid: uuid,
+              status: status
+            }, function (response) {
+              
+              if (response.status) {
+                
+                showToast(response.message, "success");
+                
+                const badge = checkbox.closest("tr").find(".badge");
+                
+                if (status) {
+                  badge
+                  .removeClass("bg-gradient-secondary")
+                  .addClass("bg-gradient-success")
+                  .text("IN-Live");
+                } else {
+                  badge
+                  .removeClass("bg-gradient-success")
+                  .addClass("bg-gradient-secondary")
+                  .text("NON-LIVE");
+                }
+                
+              } else {
+                showToast(response.errors, "warning");
+              }
+              
+            });
+            
+          });
+          
+          $(".btn-delete").on("click", function () {
+            
+            let button = $(this);
+            let product_id = button.attr("id");
+            
+            $.post("/api/v1/del/product", { uuid: product_id }, function (response) {
+              
+              if (!response.status) {
+                showToast("Product delete failed", "warning");
+                return;
+              }
+              
+              showToast("Product deleted successfully", "success");
+              
+          
+              button.closest("tr").remove();
+              
+              $.post("/api/v1/get-product", {
+                page: list_page,
+                del: true
+              }, function (res) {
+                
+                if (res.products.length > 0) {
+                  setData(res.products,true)
+                }
+                
+              });
+              
+            });
+            
+          });
+          
+          
+          
+        });
+        
+        

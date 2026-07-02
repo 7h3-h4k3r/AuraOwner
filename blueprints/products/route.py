@@ -25,12 +25,38 @@ def get_catogory_ui():
     obj_catogory = catogory(uid)
     return render_template('dialogs/catogory_list.html',session=session,details=obj_catogory)
 
+@product.route("/del/product",methods=["POST"])
+def del_product():
+    product_id = request.form.get("uuid",None)
+
+    if not product_id:
+        return jsonify({
+            "status" : False,
+            "message" : "product not found"
+        }),400
+    
+    try:
+        instance =  Product(product_id)
+        instance.collection.delete()
+            
+        return jsonify({
+            "status" : True,
+            "message" : "product successfully deleted" 
+        }),200
+    except:
+        return jsonify({
+            "status" : "error",
+            "message" : "product not found"
+        }),400
+        
+    
 
 @product.route("/get-product", methods=["POST"])
 def getProduct():
     page = int(request.form.get("page", 1))
+    del_state = (request.form.get("del",False))
     print(page)
-    product_list = Product.get(page)
+    product_list = Product.get(page,del_state)
     products = list(product_list)
 
     for product in products:
@@ -48,7 +74,7 @@ def setStock():
         return jsonify({
             "status" : "error",
             "errors" : "somewent is wrong"
-        })
+        }),400
 
     try:
         pro_obj = Product(uuid)

@@ -42,7 +42,7 @@
         </span>
         {% endif %}
     </td>
-    
+     
     <td class="align-middle text-center">
         
         <div class="d-flex justify-content-center align-items-center h-100">
@@ -62,6 +62,14 @@
         
     </td>
     
+    <td class="align-middle text-center">
+                    <button type="button"
+                            id="{{ product.uuid}}"
+                            class="btn btn-link btn-delete text-danger p-2"
+                            title="Delete">
+                        <i class="fas fa-trash-alt text-lg"></i>
+                    </button>
+                </td>
     <td class="align-middle">
         <a
         href="/product.collection/{{ product.collection.uuid }}"

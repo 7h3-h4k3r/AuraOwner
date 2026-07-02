@@ -40,17 +40,22 @@ class Product:
 
 
     @staticmethod
-    def get(page):
-        #code clean up
-        limit = 10
+    def get(page, del_state):
+
+        PAGE_SIZE = 10
+
+        if del_state:
+            skip = page * PAGE_SIZE - 1   # page=1 -> skip 9
+            limit = 1
+        else:
+            skip = (page - 1) * PAGE_SIZE
+            limit = PAGE_SIZE
 
         products = (
-        db.product.find(
-            {},
-            {"variants": 0}
+            db.product.find({}, {"variants": 0})
+            .sort("_id", -1)
+            .skip(skip)
+            .limit(limit)
         )
-        .sort("_id", -1)
-        .skip((page - 1) * limit)
-        .limit(limit)
-    )
+
         return products
