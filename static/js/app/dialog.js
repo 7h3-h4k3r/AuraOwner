@@ -30,7 +30,7 @@ class Dialog {
 
         const modalHTML = `
         <div class="modal fade" id="${this.id}" tabindex="-1">
-            <div class="modal-dialog ${sizeClass}">
+            <div class="modal-dialog  modal-dialog-centered ${sizeClass}">
                 <div class="modal-content">
                     
                     <div class="modal-header">
@@ -49,7 +49,7 @@ class Dialog {
         </div>
         `;
 
-        $('body').append(modalHTML);
+       document.querySelector("main").insertAdjacentHTML("beforeend", modalHTML);
 
         const modalEl = $('#' + this.id);
 

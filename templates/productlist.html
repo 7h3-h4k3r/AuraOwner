@@ -67,7 +67,7 @@
                   </td>
                   
                   <td class="align-middle text-center text-sm">
-                    {% if product.status == "true"%}
+                    {% if product.status %}
                     <span class="badge badge-sm bg-gradient-success">
                       In-Live
                     </span>
@@ -88,7 +88,7 @@
                         class="form-check-input product-status"
                         type="checkbox"
                         data-uuid="{{ product.uuid }}"
-                        {% if product.status == "true" %}checked{% endif %}
+                        {% if product.status %}checked{% endif %}
                         >
                         
                       </div>
@@ -108,7 +108,7 @@
                   
                   <td class="align-middle">
                     <a
-                    href="/product/{{ product.uuid }}"
+                    href="api/v1/product/{{ product.uuid }}"
                     class="text-secondary font-weight-bold text-xs"
                     >
                     Edit
@@ -344,5 +344,5 @@
     </div>
   </div>
 </div>
-
+<script src="{{ url_for('static', filename='js/app/product.js') }}"></script>
 {% endblock %}

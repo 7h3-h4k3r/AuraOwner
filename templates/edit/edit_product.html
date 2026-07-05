@@ -1,0 +1,215 @@
+ {% extends '_master.html' %}
+ 
+ {% block content %}
+ <div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Edit Product </h6>
+                    
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Profit&Qt</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">in-stock</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="edit-product">
+                                
+                                <tr>
+                                    
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            
+                                            <div>
+                                                <img
+                                                src="{{ url_for('static', filename=product.collection.images[0]) }}"
+                                                class="avatar avatar-sm me-3"
+                                                alt="{{ product.collection.name }}"
+                                                >
+                                            </div>
+                                            
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ product.collection.name }}</h6>
+                                                <p class="text-xs text-secondary mb-0">
+                                                    {{ product.collection.uuid }}
+                                                </p>
+                                            </div>
+                                            
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            ₹{{ product.collection.price }}
+                                        </p>
+                                        
+                                        <p class="text-xs text-secondary mb-0">
+                                            Qty: {{ product.collection.quantity }}
+                                        </p>
+                                    </td>
+                                    
+                                    <td class="align-middle text-center text-sm">
+                                        {% if product.collection.status %}
+                                        <span class="badge badge-sm bg-gradient-success">
+                                            In-Live
+                                        </span>
+                                        {% else %}
+                                        <span class="badge badge-sm bg-gradient-secondary">
+                                            Non-Live
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td class="align-middle text-center">
+                                        
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                            
+                                            <div class="form-check form-switch m-0">
+                                                
+                                                <input
+                                                class="form-check-input product.collection-status"
+                                                type="checkbox"
+                                                data-uuid="{{ product.collection.uuid }}"
+                                                {% if product.collection.status %}checked{% endif %}
+                                                >
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                    </td>
+                                    
+                                    <td class="align-middle text-center">
+                                        <button type="button"
+                                        id="{{ product.collection.uuid}}"
+                                        class="btn btn-link btn-delete text-danger p-2"
+                                        title="Delete">
+                                        <i class="fas fa-trash-alt text-lg"></i>
+                                    </button>
+                                </td>
+                                
+                                
+                                
+                                
+                            </tr>
+                            
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            
+            
+            <div class="card-body">
+                <form id="EditProductForm" enctype="multipart/form-data">
+                    <h6 class="text-sm">Live Product Preview</h6>
+                    
+                    <div class="card product-preview-card shadow-none border mt-3">
+                        <div class="card-body">
+                            
+                            <div class="product-preview-box">
+                                
+                                <div class="main-image-box previewImage">
+                                    <span class="discount-badge">
+                                        <span id="previewDiscount">10</span>% OFF
+                                        <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
+                                    </span>
+                                    
+                                    <span class="stock-badge edit-icon" id="previewStockBadge">
+                                        In Stock
+                                        <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
+                                    </span>
+                                    
+                                    <img id="imageHolder" src="{{ url_for('static', filename=product.collection.images[0]) }}" alt="No Image Available">
+                                    
+                                    <i class="fas fa-pen position-absolute top-0 end-0 m-2"
+                                    style="cursor:pointer;"></i>
+                                </div>
+                                
+                                <div class="info-section">
+                                    
+                                    <div class="preview-header">
+                                        <span class="category-badge" id="previewCategory">
+                                            Fashion
+                                            <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
+                                        </span>
+                                        
+                                        <span class="live-badge">Live Preview</span>
+                                    </div>
+                                    
+                                    <h4 id="edit-previewName">
+                                        {{product.collection.name}}
+                                        <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
+                                    </h4>
+                                    
+                                    <p id="previewDesc">
+                                        {{product.collection.description}}
+                                        <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
+                                    </p>
+                                    
+                                    <div class="price-box">
+                                        <h3>
+                                            ₹<span id="previewPrice">{{product.collection.price}}</span>
+                                            
+                                        </h3>
+                                        
+                                        <span class="old-price">
+                                            ₹<span id="previewOldPrice">0</span>
+                                            
+                                        </span>
+                                        <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
+                                    </div>
+                                    
+                                    <div class="preview-meta">
+                                        <span>
+                                            Qty: <b id="previewQty">{{product.collection.quantity}}</b>
+                                            <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
+                                        </span>
+                                        
+                                        
+                                    </div>
+                                    
+                                    <div class="preview-tags">
+                                        <span>Fast delivery </span>
+                                        <span>Best seller</i></span>
+                                        <span>Premium</i></span>
+                                        <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn bg-gradient-primary">
+                            Save Product
+                        </button>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+

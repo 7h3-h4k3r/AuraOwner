@@ -30,7 +30,10 @@ class Product:
         product_uuid = str(uuid4())
 
         product_data['uuid'] = product_uuid
-        product_data['status'] = True
+        product_data['status'] = "true"
+        product_data['stockBadge'] = "In Stock"
+        product_data['offers'] = 10
+        
         result = db.product.insert_one(product_data)
         
         if not result.inserted_id:

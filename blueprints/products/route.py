@@ -14,6 +14,23 @@ UPLOAD_FOLDER = "static/uploads/products"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
+@product.route("/product/<uid>")
+def edit_product(uid):
+    # try:
+    uid = uid.strip() 
+
+    pro_obj = Product(uid)
+        
+    return render_template('edit/edit_product.html',product=pro_obj)
+    # except:
+    #     return jsonify({
+    #         "error" : "product not found"
+    #     }),400
+
+   
+    
+    
+
 @product.route('/get/catogory',methods=['POST'])
 def get_catogory_ui():
     if not session.get('authenticated'):
