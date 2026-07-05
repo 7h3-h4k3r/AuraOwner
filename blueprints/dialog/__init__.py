@@ -7,4 +7,5 @@ dialog = Blueprint(
     url_prefix='/api/v1/dialog'
 )
 
+
 from . import route

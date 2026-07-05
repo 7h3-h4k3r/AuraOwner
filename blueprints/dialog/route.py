@@ -17,3 +17,10 @@ def get_product_ui():
     if not session.get('authenticated'):
         return redirect(url_for('login'))
     return render_template('dialogs/product.html',session=session)
+
+@dialog.route('/get/badges',methods=["GET"])
+def get_badges():
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
+    return render_template('dialogs/badges.html')
+        

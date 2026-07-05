@@ -170,3 +170,34 @@ def add_product():
         "message": "Product saved",
         "uuid": instance.collection.uuid
     })
+
+
+
+@product.route("/set-badge",methods=["POST"])
+def set_badge():
+    uuid = request.form.get("uuid", "").strip()
+    badge = request.form.get("badge" , "").strip()
+
+    if not uuid:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,400
+
+    if not badge:
+        return jsonify({
+            "error" : "Badge not found"
+        })
+    
+    try:
+        pro_obj = Product(uuid)
+        pro_obj.collection.stockBadge = badge
+        
+        return jsonify({
+            "success" : "badge updated"
+        })
+    except:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,409
+    
+
