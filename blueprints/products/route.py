@@ -201,3 +201,30 @@ def set_badge():
         }) ,409
     
 
+@product.route("/set-price",methods=["POST"])
+def set_price():
+    uuid = request.form.get("uuid", "").strip()
+    price = request.form.get("price" , "").strip()
+
+    if not uuid:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,400
+
+    if not price:
+        return jsonify({
+            "error" : "Badge not found"
+        })
+    
+    try:
+        pro_obj = Product(uuid)
+        pro_obj.collection.price = price
+        
+        return jsonify({
+            "success" : "price updated"
+        })
+    except:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,409
+    
