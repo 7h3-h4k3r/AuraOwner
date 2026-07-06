@@ -1,9 +1,12 @@
 
-
-function setstockBadge(){
-    $.get('/api/v1/dialog/get/badges',function(data){
+function toUpper(id){
+    return id.charAt(0).toUpperCase() + id.slice(1)
+}
+function setBadges(id){
+    const is_id= toUpper(id)
+    $.get('/api/v1/dialog/get/badges-'+is_id,function(data){
         new Dialog({
-            title: "Badge",
+            title: is_id+" Badge",
             content: data,
             size: "lm"
         })
@@ -26,14 +29,17 @@ function setstockBadge(){
                     
                     const colors = "text-success text-danger text-warning text-primary text-info text-dark text-secondary";
                     
-                    $.post("/api/v1/set-badge", {
+                    $.post("/api/v1/set-badge"+is_id, {
                         uuid: $("#uuid").data("uuid"),
-                        badge: icon + " " + text
+                        badge:JSON.stringify({
+                            text: icon + text,
+                            color: color
+                        })
                     })
                     .done(function (data) {
                         showToast(data.success, "success");
                         if(color){
-                            $("#previewStockBadge")
+                            $("#preview"+is_id+"Badge")
                             .removeClass(colors)
                             .addClass(color)
                             .html(`${icon} ${text} <i class="fas fa-pen ms-1"></i>`);
@@ -60,8 +66,8 @@ function setstockBadge(){
 }
 
 function setPriceAndQuantity(id){
-
-    const is_id = id.charAt(0).toUpperCase() + id.slice(1)
+    
+    const is_id = toUpper(id)
     const getvl = $("#preview"+is_id).text()
     console.log(getvl)
     const content = `
@@ -143,10 +149,17 @@ $("#EditProductForm").on("click", ".edit-icon", function () {
     
     switch (status) {
         case "previewStockBadge":
-        setstockBadge()
-        
+        setBadges("stock")
+        break;
         case "previewPrices":
         setPriceAndQuantity("price")
+        break;
+        case "previewQtys":
+        setPriceAndQuantity("quantity")
+        break;
+        case "previewTag":
+        setBadges("tag")
+        break
     }
 });
 

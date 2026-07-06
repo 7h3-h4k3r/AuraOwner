@@ -5,6 +5,7 @@ from flask import render_template, redirect, url_for, flash, request ,session ,j
 from flask import Blueprint
 from uuid import uuid4
 from src.Product import Product
+import json
 import os
 from werkzeug.utils import secure_filename
 from . import product , validate_product_form , allowed_file , get_products
@@ -173,11 +174,12 @@ def add_product():
 
 
 
-@product.route("/set-badge",methods=["POST"])
+@product.route("/set-badgeStock",methods=["POST"])
 def set_badge():
     uuid = request.form.get("uuid", "").strip()
-    badge = request.form.get("badge" , "").strip()
 
+    badge = json.loads(request.form.get("badge", "{}"))
+    print(badge)
     if not uuid:
         return jsonify({
             "error" : "product id not found"
@@ -199,7 +201,35 @@ def set_badge():
         return jsonify({
             "error" : "product id not found"
         }) ,409
+
+@product.route("/set-badgeTag",methods=["POST"])
+def set_badge_tag():
+    uuid = request.form.get("uuid", "").strip()
+
+    badge = json.loads(request.form.get("badge", "{}"))
     
+    if not uuid:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,400
+
+    if not badge:
+        return jsonify({
+            "error" : "Badge not found"
+        })
+    
+    try:
+        pro_obj = Product(uuid)
+        pro_obj.collection.tags = badge
+        
+        return jsonify({
+            "success" : "badge updated"
+        })
+    except:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,409
+      
 
 @product.route("/set-Price",methods=["POST"])
 def set_price():
@@ -229,7 +259,7 @@ def set_price():
         }) ,409
     
 
-@product.route("/set-quantity",methods=["POST"])
+@product.route("/set-Quantity",methods=["POST"])
 def set_quantity():
     uuid = request.form.get("uuid", "").strip()
     quantity = request.form.get("value" , "").strip()
@@ -239,7 +269,7 @@ def set_quantity():
             "error" : "product id not found"
         }) ,400
 
-    if not price:
+    if not quantity:
         return jsonify({
             "error" : "Badge not found"
         })

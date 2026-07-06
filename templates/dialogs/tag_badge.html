@@ -1,0 +1,8 @@
+{% for tag in tags %}
+    <input type="radio" class="btn-check" name="badge"
+        id="{{tag}}"
+        value="{{tag}}"
+        data-color="text-success">
+    <label class="btn btn-outline-success" for="{{tag}}">{{tag}}</label>
+    
+{% endfor %}

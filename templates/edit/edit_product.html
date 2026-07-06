@@ -131,84 +131,85 @@
                                         <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
                                     </span>
                                     
-                                    <span class="stock-badge edit-icon" id="previewStockBadge">
-                                        {{product.collection.stockBadge}}
+                                    <span class="stock-badge edit-icon {{ product.collection.stockBadge['color'] }}"
+                                        id="previewStockBadge">
+                                        {{ product.collection.stockBadge['text'] }}
+                                        <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
+                                    </span>
+                                
+                                <img id="imageHolder" src="{{ url_for('static', filename=product.collection.images[0]) }}" alt="No Image Available">
+                                
+                                <i class="fas fa-pen position-absolute top-0 end-0 m-2"
+                                style="cursor:pointer;"></i>
+                            </div>
+                            
+                            <div class="info-section">
+                                
+                                <div class="preview-header">
+                                    <span class="category-badge" id="previewCategory">
+                                        Fashion
                                         <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
                                     </span>
                                     
-                                    <img id="imageHolder" src="{{ url_for('static', filename=product.collection.images[0]) }}" alt="No Image Available">
-                                    
-                                    <i class="fas fa-pen position-absolute top-0 end-0 m-2"
-                                    style="cursor:pointer;"></i>
+                                    <span class="live-badge">Live Preview</span>
                                 </div>
                                 
-                                <div class="info-section">
-                                    
-                                    <div class="preview-header">
-                                        <span class="category-badge" id="previewCategory">
-                                            Fashion
-                                            <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
-                                        </span>
+                                <h4 id="edit-previewName">
+                                    {{product.collection.name}}
+                                    <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
+                                </h4>
+                                
+                                <p id="previewDesc">
+                                    {{product.collection.description}}
+                                    <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
+                                </p>
+                                
+                                <div class="price-box  edit-icon" id="previewPrices">
+                                    <h3>
+                                        ₹<span id="previewPrice">{{product.collection.price}}</span>
                                         
-                                        <span class="live-badge">Live Preview</span>
-                                    </div>
+                                    </h3>
                                     
-                                    <h4 id="edit-previewName">
-                                        {{product.collection.name}}
-                                        <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
-                                    </h4>
-                                    
-                                    <p id="previewDesc">
-                                        {{product.collection.description}}
-                                        <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
-                                    </p>
-                                    
-                                    <div class="price-box  edit-icon" id="previewPrices">
-                                        <h3>
-                                            ₹<span id="previewPrice">{{product.collection.price}}</span>
-                                            
-                                        </h3>
+                                    <span class="old-price">
+                                        ₹<span id="previewOldPrice">0</span>
                                         
-                                        <span class="old-price">
-                                            ₹<span id="previewOldPrice">0</span>
-                                            
-                                        </span>
-                                        <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
-                                    </div>
-                                    
-                                    <div class="preview-meta">
-                                        <span>
-                                            Qty: <b id="previewQty">{{product.collection.quantity}}</b>
-                                            <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
-                                        </span>
-                                        
-                                        
-                                    </div>
-                                    
-                                    <div class="preview-tags">
-                                        <span>Fast delivery </span>
-                                        <span>Best seller</i></span>
-                                        <span>Premium</i></span>
+                                    </span>
+                                    <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
+                                </div>
+                                
+                                <div class="preview-meta edit-icon" id="previewQtys">
+                                    <span>
+                                        Qty: <b id="previewQuantity">{{product.collection.quantity}}</b>
                                         <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
-                                    </div>
+                                    </span>
                                     
+                                    
+                                </div>
+                                
+                                <div class="preview-tags edit-icon" id="previewTag">
+                                    <span>Fast delivery </span>
+                                    <span>Best seller</i></span>
+                                    <span>Premium</i></span>
+                                    <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
                                 </div>
                                 
                             </div>
                             
                         </div>
+                        
                     </div>
-                    
-                    <div class="text-end mt-4">
-                        <button type="submit" class="btn bg-gradient-primary">
-                            Save Product
-                        </button>
-                    </div>
-                    
-                </form>
-            </div>
+                </div>
+                
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn bg-gradient-primary">
+                        Save Product
+                    </button>
+                </div>
+                
+            </form>
         </div>
     </div>
+</div>
 </div>
 
 

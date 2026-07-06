@@ -18,9 +18,17 @@ def get_product_ui():
         return redirect(url_for('login'))
     return render_template('dialogs/product.html',session=session)
 
-@dialog.route('/get/badges',methods=["GET"])
+@dialog.route('/get/badges-Stock',methods=["GET"])
 def get_badges():
     if not session.get('authenticated'):
         return redirect(url_for('login'))
-    return render_template('dialogs/badges.html')
-        
+    return render_template('dialogs/stock_badge.html')
+
+@dialog.route('get/badges-Tag',methods=["GET"])
+def get_tag_badges():
+    values_list = ['Authentic','Recommended','Top Pick','Quality','Assured','Tested' ]
+
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
+    
+    return render_template('dialogs/tag_badge.html',tags = values_list)
