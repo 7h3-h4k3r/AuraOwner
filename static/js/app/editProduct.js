@@ -59,18 +59,22 @@ function setstockBadge(){
     });
 }
 
-function setPrice(){
-    
+function setPriceAndQuantity(id){
+
+    const is_id = id.charAt(0).toUpperCase() + id.slice(1)
+    const getvl = $("#preview"+is_id).text()
+    console.log(getvl)
     const content = `
     <div class="input-group mb-3">
         <button class="btn btn-outline-primary mb-0" id="minus" type="button">-</button>
         <button class="btn btn-outline-primary mb-0" id="plus" type="button">+</button>
-        <input type="text" class="form-control text-center" id="price" value="89" >
+        <input type="text" class="form-control text-center" id="${is_id}" value="${getvl}" >
     </div>
  
     `
+    
     const dialog = new Dialog({
-        title: "Price",
+        title: is_id,
         content: content,
         size: "lm"
     })
@@ -84,14 +88,15 @@ function setPrice(){
             text: "Submit",
             class: "btn-primary",
             onClick: (e, modal) => {
-                const price = modal.find("#price").val();
-                $.post("/api/v1/set-price", {
+                const value = modal.find("#" + is_id).val();
+                $.post("/api/v1/set-"+is_id, {
                     uuid: $("#uuid").data("uuid"),
-                    price: price
+                    value: value
                 })
                 .done(function (data) {
                     showToast(data.success, "success");
-                    $("#previewPrice").html(`${price}`);
+                    console.log("#preview"+is_id)
+                    $("#preview"+is_id).html(`${value}`);
                     
                 })
                 .fail(function (xhr) {
@@ -118,13 +123,13 @@ function setPrice(){
         const step = 1;
         
         $("#plus").on("click", function () {
-            let price = parseFloat($("#price").val()) || 0;
-            $("#price").val((price + step).toFixed(2));
+            let plus_v = parseFloat($("#"+is_id).val()) || 0;
+            $("#"+is_id).val((plus_v + step).toFixed(2));
         });
         
         $("#minus").on("click", function () {
-            let price = parseFloat($("#price").val()) || 0;
-            $("#price").val(Math.max(0, price - step).toFixed(2));
+            let minus_v = parseFloat($("#"+is_id).val()) || 0;
+            $("#"+is_id).val(Math.max(0, minus_v - step).toFixed(2));
         });
     }, 0);
 }
@@ -141,7 +146,7 @@ $("#EditProductForm").on("click", ".edit-icon", function () {
         setstockBadge()
         
         case "previewPrices":
-        setPrice()
+        setPriceAndQuantity("price")
     }
 });
 
