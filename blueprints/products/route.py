@@ -1,6 +1,6 @@
 from src.Authenticate import Users
 from src.Sessions import Session
-from src.AddProduct import   Product
+from src.Product import   Product
 from flask import render_template, redirect, url_for, flash, request ,session ,jsonify
 from flask import Blueprint
 from uuid import uuid4

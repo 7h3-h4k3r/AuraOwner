@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request ,session ,jsonify
 from flask import Blueprint
+from src.Product import   Product
 from pymongo.errors import PyMongoError
 from .. import is_valid_syntax , error
 from . import dialog
@@ -24,11 +25,24 @@ def get_badges():
         return redirect(url_for('login'))
     return render_template('dialogs/stock_badge.html')
 
-@dialog.route('get/badges-Tag',methods=["GET"])
+
+@dialog.route('/get/badges-Tag',methods=["GET"])
 def get_tag_badges():
-    values_list = ['Authentic','Recommended','Top Pick','Quality','Assured','Tested' ]
 
     if not session.get('authenticated'):
         return redirect(url_for('login'))
+
+
+    uuid = request.args.get("uuid")
     
-    return render_template('dialogs/tag_badge.html',tags = values_list)
+    if not uuid:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,400
+    
+
+    pro_obj = Product(uuid)
+    tags = pro_obj.collection.tags.get()
+    return render_template('dialogs/tag_badge.html',tags = tags)
+    
+   

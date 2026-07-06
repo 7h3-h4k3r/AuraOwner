@@ -132,10 +132,10 @@
                                     </span>
                                     
                                     <span class="stock-badge edit-icon {{ product.collection.stockBadge['color'] }}"
-                                        id="previewStockBadge">
-                                        {{ product.collection.stockBadge['text'] }}
-                                        <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
-                                    </span>
+                                    id="previewStockBadge">
+                                    {{ product.collection.stockBadge['text'] }}
+                                    <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
+                                </span>
                                 
                                 <img id="imageHolder" src="{{ url_for('static', filename=product.collection.images[0]) }}" alt="No Image Available">
                                 
@@ -187,9 +187,9 @@
                                 </div>
                                 
                                 <div class="preview-tags edit-icon" id="previewTag">
-                                    <span>Fast delivery </span>
-                                    <span>Best seller</i></span>
-                                    <span>Premium</i></span>
+                                    <span class="badge-fast">Fast delivery</span>
+                                    <span class="badge-best">Best seller</span>
+                                    <span class="badge-premium">Premium</span>
                                     <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
                                 </div>
                                 

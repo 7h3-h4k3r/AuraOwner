@@ -4,7 +4,7 @@ function toUpper(id){
 }
 function setBadges(id){
     const is_id= toUpper(id)
-    $.get('/api/v1/dialog/get/badges-'+is_id,function(data){
+    $.get('/api/v1/dialog/get/badges-'+is_id,{uuid:$("#uuid").data("uuid")},function(data){
         new Dialog({
             title: is_id+" Badge",
             content: data,
@@ -62,7 +62,36 @@ function setBadges(id){
             }
         ])
         .render();
+        $(document).on("click", "#addTag", function () {
+
+    const text = $("#tagText").val().trim();
+    const color = $("#tagColor").val();
+
+    if (text === "") {
+        alert("Please enter a tag.");
+        return;
+    }
+
+    $("#tagContainer").append(`
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="${color} fw-bold">${text}</span>
+
+            <button type="button" class="btn btn-link text-danger p-0 delete-tag">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `);
+
+    // Clear input
+    $("#tagText").val("");
+    $("#tagColor").prop("selectedIndex", 0);
+});
+        
+        $(document).on("click", ".delete-tag", function () {
+            $(this).closest(".d-flex").remove();
+        });
     });
+    
 }
 
 function setPriceAndQuantity(id){
