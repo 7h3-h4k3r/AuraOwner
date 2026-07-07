@@ -202,34 +202,63 @@ def set_badge():
             "error" : "product id not found"
         }) ,409
 
-@product.route("/set-badgeTag",methods=["POST"])
+@product.route("/set-badgeTag", methods=["POST"])
 def set_badge_tag():
     uuid = request.form.get("uuid", "").strip()
 
-    badge = json.loads(request.form.get("badge", "{}"))
-    
+    tags = json.loads(request.form.get("tags", "[]"))
+
     if not uuid:
         return jsonify({
-            "error" : "product id not found"
-        }) ,400
+            "error": "Product ID not found"
+        }), 400
 
-    if not badge:
+    if not tags:
         return jsonify({
-            "error" : "Badge not found"
-        })
-    
+            "error": "No tags found"
+        }), 400
+
     try:
         pro_obj = Product(uuid)
-        pro_obj.collection.tags = badge
-        
+        pro_obj.collection.tags = tags
+
         return jsonify({
-            "success" : "badge updated"
+            "success": "Tags updated"
         })
-    except:
+
+    except Exception:
         return jsonify({
-            "error" : "product id not found"
-        }) ,409
-      
+            "error": "Product ID not found"
+        }), 409
+
+@product.route("/del-badgetag", methods=["POST"])
+def del_badge_tag():
+    uuid = request.form.get("uuid", "").strip()
+    tag_id = request.form.get("id","").strip()
+
+
+    if not uuid:
+        return jsonify({
+            "error": "Product ID not found"
+        }), 400
+
+    if not tag_id:
+        return jsonify({
+            "error": "No tags found"
+        }), 400
+
+    try:
+        pro_obj = Product(uuid)
+        del pro_obj.collection.tags[tag_id]
+
+        return jsonify({
+            "success": "Tags updated"
+        })
+
+    except Exception:
+        return jsonify({
+            "error": "Product ID not found"
+        }), 409
 
 @product.route("/set-Price",methods=["POST"])
 def set_price():

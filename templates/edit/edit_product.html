@@ -187,9 +187,11 @@
                                 </div>
                                 
                                 <div class="preview-tags edit-icon" id="previewTag">
-                                    <span class="badge-fast">Fast delivery</span>
-                                    <span class="badge-best">Best seller</span>
-                                    <span class="badge-premium">Premium</span>
+                                    {% for key, tag in product.collection.tags.items() %}
+                                    <span id="{{ key }}" class="badge-fast {{ tag.color }}">
+                                        {{ tag.text }}
+                                    </span>
+                                    {% endfor %}
                                     <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
                                 </div>
                                 
