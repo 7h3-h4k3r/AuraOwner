@@ -126,9 +126,9 @@
                             <div class="product-preview-box">
                                 
                                 <div class="main-image-box previewImage">
-                                    <span class="discount-badge">
-                                        <span id="previewDiscount">10</span>% OFF
-                                        <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
+                                    <span class="discount-badge edit-icon" id="previewDisBadge">
+                                        <span  >{{product.collection.disBadge['text']}}</span>
+                                        <i class="fas fa-pen ms-1 " style="cursor:pointer;"></i>
                                     </span>
                                     
                                     <span class="stock-badge edit-icon {{ product.collection.stockBadge['color'] }}"
@@ -186,14 +186,7 @@
                                     
                                 </div>
                                 
-                                <div class="preview-tags edit-icon" id="previewTag">
-                                    {% for key, tag in product.collection.tags.items() %}
-                                    <span id="{{ key }}" class="badge-fast {{ tag.color }}">
-                                        {{ tag.text }}
-                                    </span>
-                                    {% endfor %}
-                                    <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
-                                </div>
+                        
                                 
                             </div>
                             

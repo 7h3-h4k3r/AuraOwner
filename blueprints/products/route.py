@@ -179,7 +179,7 @@ def set_badge():
     uuid = request.form.get("uuid", "").strip()
 
     badge = json.loads(request.form.get("badge", "{}"))
-    print(badge)
+
     if not uuid:
         return jsonify({
             "error" : "product id not found"
@@ -202,63 +202,33 @@ def set_badge():
             "error" : "product id not found"
         }) ,409
 
-@product.route("/set-badgeTag", methods=["POST"])
+@product.route("/set-badgeDis", methods=["POST"])
 def set_badge_tag():
     uuid = request.form.get("uuid", "").strip()
-
-    tags = json.loads(request.form.get("tags", "[]"))
-
-    if not uuid:
-        return jsonify({
-            "error": "Product ID not found"
-        }), 400
-
-    if not tags:
-        return jsonify({
-            "error": "No tags found"
-        }), 400
-
-    try:
-        pro_obj = Product(uuid)
-        pro_obj.collection.tags = tags
-
-        return jsonify({
-            "success": "Tags updated"
-        })
-
-    except Exception:
-        return jsonify({
-            "error": "Product ID not found"
-        }), 409
-
-@product.route("/del-badgetag", methods=["POST"])
-def del_badge_tag():
-    uuid = request.form.get("uuid", "").strip()
-    tag_id = request.form.get("id","").strip()
-
+    badge = json.loads(request.form.get("badge", "{}"))
 
     if not uuid:
         return jsonify({
-            "error": "Product ID not found"
-        }), 400
+            "error" : "product id not found"
+        }) ,400
 
-    if not tag_id:
+    if not badge:
         return jsonify({
-            "error": "No tags found"
-        }), 400
-
+            "error" : "Badge not found"
+        })
+    
     try:
         pro_obj = Product(uuid)
-        del pro_obj.collection.tags[tag_id]
-
+        pro_obj.collection.disBadge = badge
+        
         return jsonify({
-            "success": "Tags updated"
+            "success" : "badge updated"
         })
-
-    except Exception:
+    except:
         return jsonify({
-            "error": "Product ID not found"
-        }), 409
+            "error" : "product id not found"
+        }) ,409
+
 
 @product.route("/set-Price",methods=["POST"])
 def set_price():

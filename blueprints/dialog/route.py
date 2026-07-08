@@ -3,7 +3,7 @@ from flask import Blueprint
 from src.Product import   Product
 from pymongo.errors import PyMongoError
 from .. import is_valid_syntax , error
-from . import dialog
+from . import dialog , badgeList , discountBadgeList
 
 
 @dialog.route('/create/catogory',methods=['GET'])
@@ -23,26 +23,15 @@ def get_product_ui():
 def get_badges():
     if not session.get('authenticated'):
         return redirect(url_for('login'))
-    return render_template('dialogs/stock_badge.html')
+    
+    return render_template('dialogs/badge.html' ,badges=badgeList)
 
 
-@dialog.route('/get/badges-Tag',methods=["GET"])
-def get_tag_badges():
-
+@dialog.route('/get/badges-Dis',methods=["GET"])
+def get_dis_badge():
     if not session.get('authenticated'):
         return redirect(url_for('login'))
+    return render_template('dialogs/badge.html',badges=discountBadgeList)
 
 
-    uuid = request.args.get("uuid")
-    
-    if not uuid:
-        return jsonify({
-            "error" : "product id not found"
-        }) ,400
-    
-
-    pro_obj = Product(uuid)
-    tags = pro_obj.collection.tags.get()
-    return render_template('dialogs/tag_badge.html',tags = tags)
-    
    

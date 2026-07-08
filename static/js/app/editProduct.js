@@ -41,35 +41,6 @@ function setBadges(id) {
 
 function saveBadge(is_id, modal) {
 
-if (is_id === "Tag") {
-
-    const tags = [];
-    var  val = 0
-    modal.find("#tagContainer span").each(function () {
-        tags.push({
-            val :{
-                text: $(this).text().trim(),
-                color: $(this).attr("class").split(" ")[0],
-            },
-            
-            
-        });
-        val = val +1
-    });
-    console.log(tags)
-    $.post("/api/v1/set-badge" + is_id, {
-        uuid: $("#uuid").data("uuid"),
-        tags: JSON.stringify(tags)
-    })
-    .done(function (data) {
-        showToast(data.success, "success");
-    })
-    .fail(function (xhr) {
-        showToast(xhr.responseJSON?.error || "Something went wrong.", "error");
-    });
-
-} else {
-
     const badge = modal.find("input[name='badge']:checked");
 
     const text = badge.val();
@@ -87,7 +58,6 @@ if (is_id === "Tag") {
         showToast(data.success, "success");
 
         $("#preview" + is_id + "Badge")
-            .removeClass(colors)
             .addClass(color)
             .html(`${icon} ${text} <i class="fas fa-pen ms-1"></i>`);
     })
@@ -96,50 +66,8 @@ if (is_id === "Tag") {
     });
 
 }
-}
 
-// Register ONCE
-$(document).on("click", "#addTag", function () {
 
-    const text = $("#tagText").val().trim();
-    const color = $("#tagColor").val();
-
-    if (!text) {
-        showToast("Please enter a tag.","warning");
-    }
-
-    $("#tagContainer").append(`
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="${color} fw-bold">${text}</span>
-            <button type="button" class="btn btn-link text-danger p-0 delete-tag">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `);
-
-    $("#tagText").val("");
-    $("#tagColor").prop("selectedIndex", 0);
-});
-
-$(document).on("click", ".delete-tag", function () {
-
-    const row = $(this).closest(".d-flex");
-    const id = row.find("span").attr("id")
-    console.log(id)
-    $.post("/api/v1/del-badgetag", {
-        uuid: $("#uuid").data("uuid"),
-        id: id
-    })
-    .done(function (response) {
-        row.remove();
-        removePreviewTag(id)
-        showToast("Tag deleted successfully","success");
-    })
-    .fail(function (xhr) {
-        showToast("Failed to delete tag!","error");
-    });
-
-});
 
 function setPriceAndQuantity(id){
     
@@ -235,7 +163,10 @@ $("#EditProductForm").on("click", ".edit-icon", function () {
         break;
         case "previewTag":
         setBadges("tag")
-        break
+        break;
+        case "previewDisBadge":
+        setBadges("dis")
+        break;
     }
 });
 

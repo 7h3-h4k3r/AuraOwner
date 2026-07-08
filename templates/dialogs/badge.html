@@ -1,0 +1,21 @@
+{% for badge in badges %}
+<input type="radio"
+       class="btn-check"
+       id="badge{{ loop.index }}"
+       name="badge"
+       value="{{ badge.text }}"
+       data-icon="{{ badge.icon }}"
+       data-color="{{ badge.color }}">
+
+<label class="btn {{ badge.outline }}" for="badge{{ loop.index }}">
+    {{ badge.icon }} {{ badge.text }}
+</label>
+{% endfor %}
+<!-- {%for b in badge%}
+<input type="radio" class="btn-check" name="badge"
+       id="{{loop.index0}}"
+       value="{{b['text']}}"
+       data-icon="{{b['icon']}}"
+       data-color="{{b['color']}}">
+<label class="btn {{b['outline']}}" for="inStock">{{b['icon']}} {{b['text']}}</label>
+<!-- {% endfor %} --> 
