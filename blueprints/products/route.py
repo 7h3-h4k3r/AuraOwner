@@ -285,3 +285,56 @@ def set_quantity():
             "error" : "product id not found"
         }) ,409
     
+
+@product.route("/set-Name",methods=["POST"])
+def set_name():
+    uuid = request.form.get("uuid", "").strip()
+    value = request.form.get("value" ,"").strip()
+    if not uuid:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,400
+
+    if not value:
+        return jsonify({
+            "error" : "Badge not found"
+        })
+    
+    try:
+        pro_obj = Product(uuid)
+        pro_obj.collection.name = value
+        
+        return jsonify({
+            "success" : "prodcut name updated"
+        })
+    except:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,409
+
+
+@product.route("/set-Description",methods=["POST"])
+def set_discription():
+    uuid = request.form.get("uuid", "").strip()
+    value = request.form.get("value" ,"").strip()
+    if not uuid:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,400
+
+    if not value:
+        return jsonify({
+            "error" : "Badge not found"
+        })
+    
+    try:
+        pro_obj = Product(uuid)
+        pro_obj.collection.description = value
+        
+        return jsonify({
+            "success" : "prodcut discription updated"
+        })
+    except:
+        return jsonify({
+            "error" : "product id not found"
+        }) ,409

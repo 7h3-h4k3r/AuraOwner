@@ -68,23 +68,50 @@ function saveBadge(is_id, modal) {
 }
 
 
+function getContent(id, text = false) {
 
-function setPriceAndQuantity(id){
+    const is_id = toUpper(id);
+    const getvl = $("#preview" + is_id).text();
+
+    const content = `
+    <div class="input-group mb-3">
+
+        ${!text ? `
+            <button class="btn btn-outline-primary mb-0" id="minus" type="button">-</button>
+        ` : ""}
+        ${!text ? `
+            <button class="btn btn-outline-primary mb-0" id="plus" type="button">+</button>
+        ` : ""}
+        ${!text ? "" : `<button
+        class="btn btn-outline-primary mb-0"
+        type="button"
+        tabindex="-1"
+        disabled>
+        Edit's
+    </button>`}
+        
+         <input
+            type="${text ? 'text' : 'number'}"
+            class="form-control ${text ? 'text-start' : 'text-center'}"
+            id="${is_id}"
+            value="${getvl}">
+
+    
+
+    </div>
+    `;
+
+    return content;
+}
+function setPriceAndQuantity(id,text=false){
     
     const is_id = toUpper(id)
     const getvl = $("#preview"+is_id).text()
-    console.log(getvl)
-    const content = `
-    <div class="input-group mb-3">
-        <button class="btn btn-outline-primary mb-0" id="minus" type="button">-</button>
-        <button class="btn btn-outline-primary mb-0" id="plus" type="button">+</button>
-        <input type="text" class="form-control text-center" id="${is_id}" value="${getvl}" >
-    </div>
- 
-    `
+
+    const content = getContent(id,text)
     
     const dialog = new Dialog({
-        title: is_id,
+        title: 'Product ' + is_id,
         content: content,
         size: "lm"
     })
@@ -127,7 +154,14 @@ function setPriceAndQuantity(id){
         }
     ])
     .render();
-    
+    setTimeout(() => {
+    const input = document.getElementById(is_id);
+    input.focus();
+
+    if (text) {
+        input.setSelectionRange(0, 0); // Cursor at the beginning
+    }
+}, 100);
     
     setTimeout(() => {
         const step = 1;
@@ -144,6 +178,26 @@ function setPriceAndQuantity(id){
     }, 0);
 }
 
+function setText(id){
+    const id_of = toUpper(id)
+    $.post("/api/v1/set/" + is_id, {
+        uuid: $("#uuid").data("uuid"),
+        badge: JSON.stringify({
+            text: icon + text,
+            color: color
+        })
+    })
+    .done(function (data) {
+        showToast(data.success, "success");
+
+        $("#preview" + is_id + "Badge")
+            .addClass(color)
+            .html(`${icon} ${text} <i class="fas fa-pen ms-1"></i>`);
+    })
+    .fail(function (xhr) {
+        showToast(xhr.responseJSON?.error || "Something went wrong.", "error");
+    });
+}
 
 
 
@@ -166,6 +220,12 @@ $("#EditProductForm").on("click", ".edit-icon", function () {
         break;
         case "previewDisBadge":
         setBadges("dis")
+        break;
+        case "previewName":
+        setPriceAndQuantity("name",true)
+        break;
+        case "previewDescription":
+        setPriceAndQuantity("description",true)
         break;
     }
 });
