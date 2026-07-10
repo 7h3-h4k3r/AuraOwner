@@ -133,7 +133,8 @@ function setPriceAndQuantity(id,text=false){
                 .done(function (data) {
                     showToast(data.success, "success");
                     console.log("#preview"+is_id)
-                    $("#preview"+is_id).html(`${value}`);
+                    $(".preview"+is_id).html(`${value}`);
+                    
                     
                 })
                 .fail(function (xhr) {
@@ -154,12 +155,13 @@ function setPriceAndQuantity(id,text=false){
         }
     ])
     .render();
+    
     setTimeout(() => {
     const input = document.getElementById(is_id);
     input.focus();
 
     if (text) {
-        input.setSelectionRange(0, 0); // Cursor at the beginning
+        input.setSelectionRange(0, 0); 
     }
 }, 100);
     
