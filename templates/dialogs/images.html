@@ -1,0 +1,38 @@
+<div class="image-grid">
+
+    <div class="drop-area" id="dropArea">
+
+        <input
+            type="file"
+            id="images"
+            multiple
+            accept="image/*"
+            hidden>
+
+        <div class="upload-content">
+            <h4>Upload Images</h4>
+            <p>Drag & Drop Here</p>
+
+            <label for="images" class="choose-btn">
+                Choose Images
+            </label>
+
+            <small id="imageCount">0 / 7 Images</small>
+        </div>
+
+    </div>
+
+    <div id="gallery">
+
+        {% for image in e %}
+
+        <div class="image-card" data-image="{{image}}">
+            <button class="remove-btn" type="button">&times;</button>
+            <img src="/static/{{image}}">
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>

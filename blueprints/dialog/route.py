@@ -33,5 +33,27 @@ def get_dis_badge():
         return redirect(url_for('login'))
     return render_template('dialogs/badge.html',badges=discountBadgeList)
 
+@dialog.route('/get/images',methods=["GET"])
+def get_images():
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
+    uuid = request.args.get("uuid", "").strip()
+    if not uuid:
+        return {
+            "error": "UUID is required"
+        }, 400
+
+    try:
+        obj = Product(uuid)
+        return render_template(
+            "dialogs/images.html",
+            e=obj.collection.images
+        )
+    except Exception as err:
+        return {
+            "error": str(err)
+        }, 400
+    
+    
 
    

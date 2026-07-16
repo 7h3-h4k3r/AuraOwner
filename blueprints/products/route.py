@@ -338,3 +338,26 @@ def set_discription():
         return jsonify({
             "error" : "product id not found"
         }) ,409
+
+@product.route("/image/del", methods=["POST"])
+def delete_image():
+
+    uuid = request.form.get("uuid", "").strip()
+    image = request.form.get("image", "").strip()
+    print(uuid,image)
+
+    if not uuid or not image:
+        return {"error": "Missing data"}, 400
+
+    try:
+        product = Product(uuid)
+
+        if image in product.collection.images:
+            product.collection.images.remove(image)
+        return {"success" :"image deleted"}
+    except:
+        return {"error" : "product id not found"}
+
+  
+
+ 
