@@ -113,97 +113,133 @@
 <div class="row">
     <div class="col-12">
         <div class="card mb-4">
-            
-            
             <div class="card-body">
-                <form id="EditProductForm" enctype="multipart/form-data">
-                    <h6 class="text-sm">Live Product Preview</h6>
-                    <p class="text-xs text-secondary mb-0" id="uuid" data-uuid = {{product.collection.uuid}}>{{ product.collection.uuid }}</p>
+                
+                
+                
+                <h6 class="text-sm">Upload Images</h6>
+                <p class="text-xs text-secondary mb-2">Maximum 7 images allowed</p>
+                
+                <div class="image-grid">
                     
-                    <div class="card product-preview-card shadow-none border mt-3">
-                        <div class="card-body">
+                    <!-- Upload Box -->
+                    <div class="drop-area " id="dropArea">
+                        <input type="file" id="images" multiple accept="image/*">
+                        
+                        <div class="upload-content">
+                            <h4>Upload Images</h4>
+                            <p>Drag & drop here</p>
+                            <input type="file" id="images" multiple accept="image/*">
                             
-                            <div class="product-preview-box">
+                            <label for="images" id="chooseBtn" class="choose-btn">
+                                Choose
+                            </label>
+                        </div>
+                    </div>
+                   
+                    <div id="gallery"></div>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+
+<div class="col-12">
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="EditProductForm" enctype="multipart/form-data">
+                <h6 class="text-sm">Live Product Preview</h6>
+                <p class="text-xs text-secondary mb-0" id="uuid" data-uuid = {{product.collection.uuid}}>{{ product.collection.uuid }}</p>
+                
+                <div class="card product-preview-card shadow-none border mt-3">
+                    <div class="card-body">
+                        
+                        <div class="product-preview-box">
+                            
+                            <div class="main-image-box previewImage">
+                                <span class="discount-badge edit-icon" id="previewDisBadge">
+                                    <span  >{{product.collection.disBadge['text']}}</span>
+                                    <i class="fas fa-pen ms-1 " style="cursor:pointer;"></i>
+                                </span>
                                 
-                                <div class="main-image-box previewImage">
-                                    <span class="discount-badge edit-icon" id="previewDisBadge">
-                                        <span  >{{product.collection.disBadge['text']}}</span>
-                                        <i class="fas fa-pen ms-1 " style="cursor:pointer;"></i>
-                                    </span>
+                                <span class="stock-badge edit-icon {{ product.collection.stockBadge['color'] }}"
+                                id="previewStockBadge">
+                                {{ product.collection.stockBadge['text'] }}
+                                <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
+                            </span>
+                            
+                            <img id="imageHolder"  src="{{ url_for('static', filename=product.collection.images[0]) }}" alt="No Image Available">
+                            
+                            <i id="imageHolder" class="fas fa-pen position-absolute top-0 end-0 m-2 edit-icon"
+                            style="cursor:pointer;"></i>
+                        </div>
+                        
+                        <div class="info-section">
+                            
+                            <div class="preview-header">
+                                <span class="category-badge" id="previewCategory">
+                                    Fashion
                                     
-                                    <span class="stock-badge edit-icon {{ product.collection.stockBadge['color'] }}"
-                                    id="previewStockBadge">
-                                    {{ product.collection.stockBadge['text'] }}
+                                </span>
+                                
+                                <span class="live-badge">Live Preview</span>
+                            </div>
+                            
+                            <h4 id="previewName" class="edit-icon previewName">
+                                {{product.collection.name}}
+                                <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
+                            </h4>
+                            
+                            <p id="previewDescription" class="edit-icon">
+                                {{product.collection.description}}
+                                <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
+                            </p>
+                            
+                            <div class="price-box  edit-icon " id="previewPrices">
+                                <h3>
+                                    ₹<span id="previewPrice" class="previewPrice">{{product.collection.price}}</span>
+                                    
+                                </h3>
+                                
+                                <span class="old-price">
+                                    ₹<span id="previewOldPrice">0</span>
+                                    
+                                </span>
+                                <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
+                            </div>
+                            
+                            <div class="preview-meta edit-icon " id="previewQtys">
+                                <span>
+                                    Qty: <b id="previewQuantity" class="previewQuantity">{{product.collection.quantity}}</b>
                                     <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
                                 </span>
                                 
-                                <img id="imageHolder"  src="{{ url_for('static', filename=product.collection.images[0]) }}" alt="No Image Available">
                                 
-                                <i id="imageHolder" class="fas fa-pen position-absolute top-0 end-0 m-2 edit-icon"
-                                style="cursor:pointer;"></i>
                             </div>
                             
-                            <div class="info-section">
-                                
-                                <div class="preview-header">
-                                    <span class="category-badge" id="previewCategory">
-                                        Fashion
-                                        
-                                    </span>
-                                    
-                                    <span class="live-badge">Live Preview</span>
-                                </div>
-                                
-                                <h4 id="previewName" class="edit-icon previewName">
-                                    {{product.collection.name}}
-                                    <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
-                                </h4>
-                                
-                                <p id="previewDescription" class="edit-icon">
-                                    {{product.collection.description}}
-                                    <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
-                                </p>
-                                
-                                <div class="price-box  edit-icon " id="previewPrices">
-                                    <h3>
-                                        ₹<span id="previewPrice" class="previewPrice">{{product.collection.price}}</span>
-                                        
-                                    </h3>
-                                    
-                                    <span class="old-price">
-                                        ₹<span id="previewOldPrice">0</span>
-                                        
-                                    </span>
-                                    <i class="fas fa-pen ms-2" style="cursor:pointer;"></i>
-                                </div>
-                                
-                                <div class="preview-meta edit-icon " id="previewQtys">
-                                    <span>
-                                        Qty: <b id="previewQuantity" class="previewQuantity">{{product.collection.quantity}}</b>
-                                        <i class="fas fa-pen ms-1" style="cursor:pointer;"></i>
-                                    </span>
-                                    
-                                    
-                                </div>
-                                
-                        
-                                
-                            </div>
+                            
                             
                         </div>
                         
                     </div>
+                    
                 </div>
-                
-                <div class="text-end mt-4">
-                    <button type="submit" class="btn bg-gradient-primary">
-                        Save Product
-                    </button>
-                </div>
-                
-            </form>
-        </div>
+            </div>
+            
+            
+            <div class="text-end mt-4">
+                <button type="submit" class="btn bg-gradient-primary">
+                    Save Product
+                </button>
+            </div>
+            
+        </form>
     </div>
+</div>
 </div>
 </div>
 

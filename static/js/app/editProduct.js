@@ -201,304 +201,97 @@ function setText(id){
     });
 }
 
-function init_image() {
-    
-    const MIN = 5;
-    const MAX = 7;
-    
-    updateCounter();
-    
-    
-    $(document)
-    .off("change", "#images")
-    .on("change", "#images", function () {
-        
-        console.log("Choose clicked");
-        
-        let selected = Array.from(this.files);
-        
-        console.log(selected);
-        
-        if ($("#gallery .image-card").length + selected.length > MAX) {
-            
-            alert("Maximum 7 images allowed.");
-            
-            this.value = "";
-            return;
-        }
-        
-        selected.forEach(function (file) {
-            
-            if (!file.type.startsWith("image/"))
-                return;
-            
-            let reader = new FileReader();
-            
-            reader.onload = function (e) {
-                
-                $("#gallery").append(`
-                        <div class="image-card">
-                            <button class="remove-btn" type="button">&times;</button>
-                            <img src="${e.target.result}">
-                        </div>
-                    `);
-                    
-                    updateCounter();
-                    
-                };
-                
-                reader.readAsDataURL(file);
-                
-            });
-            
-            this.value = "";
-            
-        });
-        
-        
-        
-        $(document)
-        .off("click", ".remove-btn")
-        .on("click", ".remove-btn", function () {
-            
-            let card = $(this).closest(".image-card");
-            let image = card.data("image");
-            
-            console.log("Deleting:", image);
-            
-            $.post("/api/v1/image/del", {
-                uuid : $("#uuid").data("uuid"),
-                image: image
-            })
-            .done(function () {
-                
-                let currentMain = $("#imageHolder").attr("src");
-                
-                // Remove the deleted thumbnail
-                card.remove();
-                
-                // If the deleted image was the main image
-                if (currentMain === "/static/" + image) {
-                    
-                    let next = $("#gallery .image-card img").first();
-                    
-                    if (next.length) {
-                        $("#imageHolder").attr("src", next.attr("src"));
-                    } else {
-                        // No images left
-                        $("#imageHolder").attr("src", "/static/images/no-image.png");
-                        // or
-                        // $("#imageHolder").attr("src", "");
-                    }
-                }
-                
-                updateCounter();
-                
-            })
-            .fail(function (xhr,response) {
-                showToast(response , "error");
-                
-            });
-            
-        });
-        
-        
-        $(document)
-        .off("dragover", "#dropArea")
-        .on("dragover", "#dropArea", function (e) {
-            
-            e.preventDefault();
-            
-            $(this).addClass("dragging");
-            
-            console.log("Dragging");
-            
-        });
-        
-        
-        $(document)
-        .off("dragleave", "#dropArea")
-        .on("dragleave", "#dropArea", function () {
-            
-            $(this).removeClass("dragging");
-            
-        });
-        
-        
-        
-        $(document)
-        .off("drop", "#dropArea")
-        .on("drop", "#dropArea", function (e) {
-            
-            e.preventDefault();
-            
-            $(this).removeClass("dragging");
-            
-            console.log("Dropped");
-            
-            let dropped = Array.from(e.originalEvent.dataTransfer.files);
-            
-            console.log(dropped);
-            
-            if ($("#gallery .image-card").length + dropped.length > MAX) {
-                
-                alert("Maximum 7 images allowed.");
-                
-                return;
-            }
-            
-            dropped.forEach(function (file) {
-                
-                if (!file.type.startsWith("image/"))
-                    return;
-                
-                let reader = new FileReader();
-                
-                reader.onload = function (e) {
-                    
-                    $("#gallery").append(`
-                        <div class="image-card">
-                            <button class="remove-btn" type="button">&times;</button>
-                            <img src="${e.target.result}">
-                        </div>
-                    `);
+
+
+function getImg(id) {
+    $.get("/api/v1/dialog/get/images", {
+        uuid: $("#uuid").data("uuid"),
+    })
+    .done(function (data) {
+        const dialog = new Dialog({
+            title: 'Product Images',
+            content: data,
+            size: "xl"
+        })
+        .setButtons([
+            {
+                text: "Cancel",
+                class: "btn-secondary",
+                dismiss: true
+            },
+            {
+                text: "Submit",
+                class: "btn-primary",
+                onClick: (e, modal) => {
+                    const value = modal.find("#" + is_id).val();
+                    $.post("/api/v1/set-"+is_id, {
+                        uuid: $("#uuid").data("uuid"),
+                        value: value
+                    })
+                    .done(function (data) {
+                        showToast(data.success, "success");
+                        console.log("#preview"+is_id)
+                        $(".preview"+is_id).html(`${value}`);
                         
-                        updateCounter();
                         
-                    };
-                    
-                    reader.readAsDataURL(file);
-                    
-                });
-                
-            });
-            
-            
-            
-            function updateCounter() {
-                
-                let count = $("#gallery .image-card").length;
-                
-                console.log("Image Count :", count);
-                
-                if (count < MIN) {
-                    
-                    $("#imageCount")
-                    .text(count + " / " + MIN + " Minimum Required")
-                    .css("color", "#ff9800");
-                    
-                } else {
-                    
-                    $("#imageCount")
-                    .text(count + " / " + MAX + " Images")
-                    .css("color", "#4caf50");
-                    
-                }
-                
-                if (count >= MAX) {
-                    
-                    $("#dropArea").css("pointer-events", "none").css("opacity", ".5");
-                    
-                } else {
-                    
-                    $("#dropArea").css("pointer-events", "auto").css("opacity", "1");
-                    
-                }
-                
-            }
-            
-        }
-        
-        function getImg(id) {
-            $.get("/api/v1/dialog/get/images", {
-                uuid: $("#uuid").data("uuid"),
-            })
-            .done(function (data) {
-                const dialog = new Dialog({
-                    title: 'Product Images',
-                    content: data,
-                    size: "xl"
-                })
-                .setButtons([
-                    {
-                        text: "Cancel",
-                        class: "btn-secondary",
-                        dismiss: true
-                    },
-                    {
-                        text: "Submit",
-                        class: "btn-primary",
-                        onClick: (e, modal) => {
-                            const value = modal.find("#" + is_id).val();
-                            $.post("/api/v1/set-"+is_id, {
-                                uuid: $("#uuid").data("uuid"),
-                                value: value
-                            })
-                            .done(function (data) {
-                                showToast(data.success, "success");
-                                console.log("#preview"+is_id)
-                                $(".preview"+is_id).html(`${value}`);
-                                
-                                
-                            })
-                            .fail(function (xhr) {
-                                
-                                const response = xhr.responseJSON;
-                                
-                                if (response && response.error) {
-                                    showToast(response.error, "error");
-                                } else {
-                                    showToast("Something went wrong.", "error");
-                                }
-                            }); 
-                            
-                            const bsModal = bootstrap.Modal.getInstance(modal[0]);
-                            bsModal.hide();
+                    })
+                    .fail(function (xhr) {
+                        
+                        const response = xhr.responseJSON;
+                        
+                        if (response && response.error) {
+                            showToast(response.error, "error");
+                        } else {
+                            showToast("Something went wrong.", "error");
                         }
-                        
-                    }
-                ])
-                .render();
-            })
-            .fail(function (xhr) {
-                showToast(xhr.responseJSON?.error || "Something went wrong.", "error");
-            });
-            
-            init_image()
-        }
-        
-        $("#EditProductForm").on("click", ".edit-icon", function () {
-            console.log($(this).attr("id"));
-            var status = $(this).attr("id")
-            
-            switch (status) {
-                case "previewStockBadge":
-                setBadges("stock")
-                break;
-                case "previewPrices":
-                setvar("price")
-                break;
-                case "previewQtys":
-                setvar("quantity")
-                break;
-                case "previewTag":
-                setBadges("tag")
-                break;
-                case "previewDisBadge":
-                setBadges("dis")
-                break;
-                case "previewName":
-                setvar("name",true)
-                break;
-                case "previewDescription":
-                setvar("description",true)
-                break;
-                case "imageHolder":
-                console.log('image get')
-                getImg($("#uuid"))
-                break;
+                    }); 
+                    
+                    const bsModal = bootstrap.Modal.getInstance(modal[0]);
+                    bsModal.hide();
+                }
+                
             }
-        });
-        
-        
-        
+        ])
+        .render();
+    })
+    .fail(function (xhr) {
+        showToast(xhr.responseJSON?.error || "Something went wrong.", "error");
+    });
+    
+    init_image()
+}
+
+$("#EditProductForm").on("click", ".edit-icon", function () {
+    console.log($(this).attr("id"));
+    var status = $(this).attr("id")
+    
+    switch (status) {
+        case "previewStockBadge":
+        setBadges("stock")
+        break;
+        case "previewPrices":
+        setvar("price")
+        break;
+        case "previewQtys":
+        setvar("quantity")
+        break;
+        case "previewTag":
+        setBadges("tag")
+        break;
+        case "previewDisBadge":
+        setBadges("dis")
+        break;
+        case "previewName":
+        setvar("name",true)
+        break;
+        case "previewDescription":
+        setvar("description",true)
+        break;
+        case "imageHolder":
+        console.log('image get')
+        getImg($("#uuid"))
+        break;
+    }
+});
+
+
