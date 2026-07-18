@@ -31,8 +31,15 @@ class Product:
 
         product_data['uuid'] = product_uuid
         product_data['status'] = "true"
-        product_data['stockBadge'] = "In Stock"
-        product_data['offers'] = 10
+        product_data['stockBadge'] = {
+            'text' : '🆕 New Arrival ',
+            'color' : 'text-info'
+        }
+        product_data['disBadge'] = {
+            'text' : '💰 10% Off',
+            'color' : ' '
+        }
+
         
         result = db.product.insert_one(product_data)
         
@@ -41,7 +48,13 @@ class Product:
         
         return Product(product_uuid)
 
-
+    def getDataList(uuid):
+        return db.product.find_one({"uuid": uuid},{
+                "_id": 0,
+                "variants": 0,
+                "stockBadge": 0,
+                "disBadge": 0
+            })
     @staticmethod
     def get(page, del_state):
 

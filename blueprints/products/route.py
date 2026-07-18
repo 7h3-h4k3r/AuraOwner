@@ -21,7 +21,7 @@ def edit_product(uid):
     uid = uid.strip() 
 
     pro_obj = Product(uid)
-        
+    print(pro_obj.collection)
     return render_template('edit/edit_product.html',product=pro_obj)
     # except:
     #     return jsonify({
@@ -119,10 +119,70 @@ def setProduct():
             "errors" : "Product not found"
         })
 
-    pro_obj = Product(uuid)
-    return render_template('table/product.html',session=session,product=pro_obj)
+    Product_data = Product.getDataList(uuid)
+    return render_template('table/producttest.html',session=session,product=Product_data)
+
+@product.route("/set/images", methods=["POST"])
+def set_images():
+
+    uuid = request.form.get("uuid", "").strip()
+
+    existing_images = json.loads(
+        request.form.get("existingImages", "[]")
+    )
+
+    new_images = request.files.getlist("images[]")
+
+    if not uuid:
+        return jsonify({
+            "status": "error",
+            "errors": "Product not found"
+        }), 400
+
+    total = len(existing_images) + len(new_images)
+
+    if total > 5:
+        return jsonify({
+            "status": "error",
+            "errors": "Maximum 5 images allowed"
+        }), 400
+
+
+    final_images = existing_images.copy()
 
     
+    for image in new_images:
+
+        if image.filename == "":
+            continue
+
+        if not allowed_file(image.filename):
+            continue
+
+        ext = secure_filename(image.filename).rsplit(".", 1)[1].lower()
+
+        filename = f"{uuid4().hex}.{ext}"
+
+        image.save(os.path.join(UPLOAD_FOLDER, filename))
+        final_images.append(f"uploads/products/{filename}")
+   
+
+    try:
+        pro_obj = Product(uuid)
+        pro_obj.collection.images = final_images
+
+        return jsonify({
+            "status": "success",
+            "message": "Images updated successfully"
+        })
+
+    except Exception:
+        return jsonify({
+            "status": "error",
+            "errors": "Product not found"
+        }), 400
+
+ 
 @product.route("/add-product", methods=["POST"])
 def add_product():
     errors, data = validate_product_form(request)

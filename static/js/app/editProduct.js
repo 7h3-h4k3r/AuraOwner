@@ -201,65 +201,178 @@ function setText(id){
     });
 }
 
-
-
-function getImg(id) {
-    $.get("/api/v1/dialog/get/images", {
-        uuid: $("#uuid").data("uuid"),
-    })
-    .done(function (data) {
-        const dialog = new Dialog({
-            title: 'Product Images',
-            content: data,
-            size: "xl"
-        })
-        .setButtons([
-            {
-                text: "Cancel",
-                class: "btn-secondary",
-                dismiss: true
-            },
-            {
-                text: "Submit",
-                class: "btn-primary",
-                onClick: (e, modal) => {
-                    const value = modal.find("#" + is_id).val();
-                    $.post("/api/v1/set-"+is_id, {
-                        uuid: $("#uuid").data("uuid"),
-                        value: value
-                    })
-                    .done(function (data) {
-                        showToast(data.success, "success");
-                        console.log("#preview"+is_id)
-                        $(".preview"+is_id).html(`${value}`);
-                        
-                        
-                    })
-                    .fail(function (xhr) {
-                        
-                        const response = xhr.responseJSON;
-                        
-                        if (response && response.error) {
-                            showToast(response.error, "error");
-                        } else {
-                            showToast("Something went wrong.", "error");
-                        }
-                    }); 
-                    
-                    const bsModal = bootstrap.Modal.getInstance(modal[0]);
-                    bsModal.hide();
-                }
-                
-            }
-        ])
-        .render();
-    })
-    .fail(function (xhr) {
-        showToast(xhr.responseJSON?.error || "Something went wrong.", "error");
-    });
+const ProductManager = {
     
-    init_image()
-}
+    existingImages: [],    
+    selectedImages: [],     
+
+    init() {
+        this.bindEvents();
+    },
+
+    bindEvents() {
+
+        $("#dropArea").on("click", () => {
+            $("#images").click();
+        });
+
+        $("#images").on("change", (e) => {
+            this.handleFiles(e.target.files);
+            $("#images").val("");
+        });
+
+        $("#gallery").on("click", ".remove-btn", (e) => {
+            this.removeImage(e);
+        });
+
+        $("#saveImagesBtn").on("click", (e) => {
+            this.saveImages(e);
+        });
+
+    },
+
+
+    handleFiles(files) {
+
+        const newFiles = Array.from(files);
+
+        if (this.selectedImages.length + this.existingImages.length + newFiles.length > 7) {
+            showToast("Maximum 7 images only.", "warning");
+            return;
+        }
+
+        newFiles.forEach(file => {
+
+            if (!file.type.startsWith("image/"))
+                return;
+
+            this.selectedImages.push(file);
+
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+
+                if ($(".previewImage img").length === 0) {
+                    $(".previewImage").html(`<img src="${e.target.result}">`);
+                }
+
+                $("#gallery").append(`
+                    <div class="image-card new">
+                        <button type="button" class="remove-btn">×</button>
+                        <img src="${e.target.result}">
+                    </div>
+                `);
+
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+
+    },
+
+    removeImage(e) {
+
+        const card = $(e.target).closest(".image-card");
+
+        // Existing image
+        if (card.hasClass("existing")) {
+
+            const filename = card.data("image");
+
+            this.existingImages = this.existingImages.filter(
+                img => img !== filename
+            );
+
+        }
+
+        // Newly uploaded image
+        else {
+
+            const index = card.prevAll(".image-card.new").length;
+
+            this.selectedImages.splice(index, 1);
+
+        }
+
+        card.remove();
+
+        const first = $("#gallery img").first().attr("src");
+
+        if (first) {
+            $(".previewImage").html(`<img src="${first}">`);
+        } else {
+            $(".previewImage").empty();
+        }
+
+    },
+
+    getExistingImages() {
+        this.existingImages = [];
+        console.log("Fetching existing images...");
+        $("#gallery .image-card.existing").each((index, card) => {
+            const filename = $(card).data("image");
+            console.log("Existing image:", filename);
+            this.existingImages.push(filename);
+        });
+
+    },
+
+    saveImages(e) {
+    
+        e.preventDefault();
+        this.getExistingImages();
+        const total =
+            this.existingImages.length +
+            this.selectedImages.length;
+        console.log("Total images to save:", total);
+        if (total < 5) {
+            showToast("Please select at least five images.", "error");
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append(
+            "uuid",
+            $("#uuid").data("uuid")
+        );
+
+
+        formData.append(
+            "existingImages",
+            JSON.stringify(this.existingImages)
+        );
+
+     
+        this.selectedImages.forEach(file => {
+            formData.append("images[]", file);
+        });
+
+        $.ajax({
+            url: "/api/v1/set/images",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success(data) {
+                showToast(data.message, "success");
+            },
+            error(xhr) {
+                showToast(
+                    xhr.responseJSON?.errors ||
+                    "Something went wrong.",
+                    "error"
+                );
+            }
+        });
+    }
+};
+
+$(function () {
+    ProductManager.init();
+});
+
 
 $("#EditProductForm").on("click", ".edit-icon", function () {
     console.log($(this).attr("id"));

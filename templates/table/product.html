@@ -50,7 +50,7 @@
             <div class="form-check form-switch m-0">
                 
                 <input
-                class="form-check-input product.collection-status"
+                class="form-check-input product-status"
                 type="checkbox"
                 data-uuid="{{ product.collection.uuid }}"
                 {% if product.collection.status %}checked{% endif %}
@@ -63,16 +63,16 @@
     </td>
     
     <td class="align-middle text-center">
-                    <button type="button"
-                            id="{{ product.uuid}}"
-                            class="btn btn-link btn-delete text-danger p-2"
-                            title="Delete">
-                        <i class="fas fa-trash-alt text-lg"></i>
-                    </button>
-                </td>
+        <button type="button"
+                id="{{ product.uuid}}"
+                class="btn btn-link btn-delete text-danger p-2"
+                title="Delete">
+             <i class="fas fa-trash-alt text-lg"></i>
+        </button>
+    </td>
     <td class="align-middle">
         <a
-        href="/product.collection/{{ product.collection.uuid }}"
+        href="/api/v1/product/{{ product.collection.uuid }}"
         class="text-secondary font-weight-bold text-xs"
         >
         Edit
