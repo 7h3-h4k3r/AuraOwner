@@ -138,20 +138,20 @@
                     </div>
                     
                     <div id="gallery">
-                    {% for image in product.collection.images %}
-                    <div class="image-card existing">
-                        <button type="button" class="remove-btn">×</button>
-                        <img src="{{ url_for('static', filename=image) }}" alt="Image"> 
-                        
-                    </div>
-                    {% endfor %}
+                        {% for image in product.collection.images %}
+                        <div class="image-card existing">
+                            <button type="button" class="remove-btn">×</button>
+                            <img src="{{ url_for('static', filename=image) }}" alt="Image"> 
+                            
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="text-end mt-4">
-                        <button  class="btn bg-gradient-primary mb-0" id="saveImagesBtn">
-                            Save Photos
-                        </button>
-                    </div>
+                    <button  class="btn bg-gradient-primary mb-0" id="saveImagesBtn">
+                        Save Photos
+                    </button>
+                </div>
                 
             </div>
         </div>
@@ -243,7 +243,79 @@
                     
                 </form>
             </div>
+            <table class="table align-items-center mb-0">
+                <thead>
+                    <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">color</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Size</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">price</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">delete</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">edit</th>
+                        <th class="text-secondary opacity-7"></th>
+                    </tr>
+                </thead>
+                <tbody id="edit-product">
+                    
+                    <tr>
+                        
+                        <td>
+                            <div class="d-flex px-2 py-1">
+                                
+                                <div>
+                                    <img src="/static/uploads/products/17c3b01834494b6ba4c534447e994ca2.jpeg" class="avatar avatar-sm me-3" alt="sdfsdf">
+                                </div>
+                                
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm previewName" id="previewName">sdfsdf</h6>
+                                    <p class="text-xs text-secondary mb-0">
+                                        e5dd3ee1-78e1-4ec1-819e-26bf84158499
+                                    </p>
+                                </div>
+                                
+                            </div>
+                        </td>
+                        
+                        <td>
+                            <p class="text-xs font-weight-bold mb-0 previewPrice">
+                                ₹2456
+                            </p>
+                            
+                            <p class="text-xs text-secondary mb-0 ">
+                                Qty: <span clas="previewQuantity">34</span>
+                            </p>
+                        </td>
+                        
+                        <td class="align-middle text-center text-sm">
+                            
+                           <p class="text-xs font-weight-bold mb-0 previewPrice">
+                                {{ product.collection.variants[0].price }}
+                            </p>
+                            
+                        </td>
+                        
+                         <td class="align-middle text-center">
+                            <button type="button" id="e5dd3ee1-78e1-4ec1-819e-26bf84158499" class="btn btn-link btn-delete text-danger p-2" title="Delete">
+                                <i class="fas fa-trash-alt text-lg"></i>
+                            </button>
+                        </td>
+                        
+                        <td class="align-middle text-center">
+                            <button type="button" id="e5dd3ee1-78e1-4ec1-819e-26bf84158499" class="btn btn-link btn-delete text-danger p-2" title="Delete">
+                                <i class="fas fa-edit text-lg"></i>
+                            </button>
+                        </td>
+                        
+                        
+                       
+                        
+                    </tr>
+                    
+                    
+                </tbody>
+            </table>
         </div>
+        
+        
     </div>
 </div>
 
