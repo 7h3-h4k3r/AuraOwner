@@ -248,75 +248,69 @@
                     <tr>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">color</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Size</th>
-                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">price</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Price</th>
                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">delete</th>
-                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">edit</th>
+
                         <th class="text-secondary opacity-7"></th>
                     </tr>
                 </thead>
                 <tbody id="edit-product">
-                    
+                    {% for variant in product.collection.variants %}
                     <tr>
                         
                         <td>
                             <div class="d-flex px-2 py-1">
                                 
-                                <div>
-                                    <img src="/static/uploads/products/17c3b01834494b6ba4c534447e994ca2.jpeg" class="avatar avatar-sm me-3" alt="sdfsdf">
-                                </div>
-                                
-                                <div class="d-flex flex-column justify-content-center">
-                                    <h6 class="mb-0 text-sm previewName" id="previewName">sdfsdf</h6>
-                                    <p class="text-xs text-secondary mb-0">
-                                        e5dd3ee1-78e1-4ec1-819e-26bf84158499
-                                    </p>
-                                </div>
-                                
+                                <div id="avatarLetter"
+                                class="avatar avatar-sm me-3 bg-gradient-danger text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">
+                                {{product.collection.variants[variant].size[0].upper()}}
                             </div>
-                        </td>
-                        
-                        <td>
-                            <p class="text-xs font-weight-bold mb-0 previewPrice">
-                                ₹2456
-                            </p>
                             
-                            <p class="text-xs text-secondary mb-0 ">
-                                Qty: <span clas="previewQuantity">34</span>
-                            </p>
-                        </td>
-                        
-                        <td class="align-middle text-center text-sm">
+                            <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm previewName" id="previewName">{{ product.collection.variants[variant].color.upper() }}</h6>
+                                <p class="text-xs text-secondary mb-0">
+                                    {{variant.id}}
+                                </p>
+                            </div>
                             
-                           <p class="text-xs font-weight-bold mb-0 previewPrice">
-                                {{ product.collection.variants[0].price }}
-                            </p>
-                            
-                        </td>
-                        
-                         <td class="align-middle text-center">
-                            <button type="button" id="e5dd3ee1-78e1-4ec1-819e-26bf84158499" class="btn btn-link btn-delete text-danger p-2" title="Delete">
-                                <i class="fas fa-trash-alt text-lg"></i>
-                            </button>
-                        </td>
-                        
-                        <td class="align-middle text-center">
-                            <button type="button" id="e5dd3ee1-78e1-4ec1-819e-26bf84158499" class="btn btn-link btn-delete text-danger p-2" title="Delete">
-                                <i class="fas fa-edit text-lg"></i>
-                            </button>
-                        </td>
-                        
-                        
-                       
-                        
-                    </tr>
+                        </div>
+                    </td>
                     
+                    <td>
+                        <p class="text-xs font-weight-bold mb-0 previewPrice">
+                            {{product.collection.variants[variant].size}}
+                        </p>
+                        
+                        <p class="text-xs text-secondary mb-0 ">
+                            price: <span clas="previewQuantity">{{product.collection.variants[variant].price}}</span>
+                        </p>
+                    </td>
                     
-                </tbody>
-            </table>
-        </div>
-        
-        
+                    <td class="align-middle text-center text-sm">
+                        
+                        <p class="text-xs font-weight-bold mb-0 previewPrice">
+                            {{ (product.collection.variants[variant].price | int) + (product.collection.price | int) }}
+                        </p>
+                        
+                    </td>
+                    
+                    <td class="align-middle text-center">
+                        <button type="button" id={{variant}} class="btn btn-link btn-varient-delete text-danger p-2" title="Delete">
+                            <i class="fas fa-trash-alt text-lg"></i>
+                        </button>
+                    </td>
+                    
+                   
+                    
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
     </div>
+    
+    
+</div>
 </div>
 
 

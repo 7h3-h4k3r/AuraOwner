@@ -180,7 +180,7 @@ function validate_form_data(formData) {
   
 function validate_variant() {
     let invalidField = null;
-    let variants = [];
+    let variants = {};
     
     $(".variant-row").each(function () {
       
@@ -208,11 +208,11 @@ function validate_variant() {
         return false;
       }
       
-      variants.push({
+      variants[crypto.randomUUID()] = {
         color: color,
         size: size,
         price: price
-      });
+      };
       
     });
     

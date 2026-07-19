@@ -374,6 +374,31 @@ $(function () {
 });
 
 
+$(".btn-varient-delete").on("click", function () {
+    const uuid = $("#uuid").data("uuid");
+    const variantId = $(this).attr("id");
+    console.log("Deleting variant:", variantId, "for product UUID:", uuid);
+    // $.ajax({
+    //     url: "/api/v1/delete/variant",
+    //     type: "POST",
+    //     data: {
+    //         uuid: uuid,
+    //         variantId: variantId
+    //     },
+    //     success(data) {
+    //         showToast(data.message, "success");
+    //         location.reload();
+    //     },
+    //     error(xhr) {
+    //         showToast(
+    //             xhr.responseJSON?.errors ||
+    //             "Something went wrong.",
+    //             "error"
+    //         );
+    //     }
+    // });
+});
+
 $("#EditProductForm").on("click", ".edit-icon", function () {
     console.log($(this).attr("id"));
     var status = $(this).attr("id")

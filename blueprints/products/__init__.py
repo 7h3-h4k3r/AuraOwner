@@ -55,24 +55,23 @@ def validate_product_form(request):
     except json.JSONDecodeError:
         errors["variants"] = "Invalid variants JSON"
         variants = []
-
-    for i, variant in enumerate(variants):
+    for variant_id, variant in variants.items():
         color = str(variant.get("color", "")).strip()
         size = str(variant.get("size", "")).strip()
         v_price = str(variant.get("price", "")).strip()
 
         if len(color) < 3:
-            errors[f"variant_{i}_color"] = "Variant color must be at least 3 characters"
+            errors[f"{variant_id}_color"] = "Variant color must be at least 3 characters"
 
         if len(size) < 1:
-            errors[f"variant_{i}_size"] = "Variant size is required"
+            errors[f"{variant_id}_size"] = "Variant size is required"
 
         try:
             v_price = int(v_price)
             if v_price <= 0:
-                errors[f"variant_{i}_price"] = "Variant price must be greater than 0"
+                errors[f"{variant_id}_price"] = "Variant price must be greater than 0"
         except ValueError:
-            errors[f"variant_{i}_price"] = "Variant price must be a valid integer"
+            errors[f"{variant_id}_price"] = "Variant price must be a valid integer"
 
     if len(images) < 5:
         errors["images"] = "At least five image this is required"

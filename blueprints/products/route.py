@@ -122,6 +122,32 @@ def setProduct():
     Product_data = Product.getDataList(uuid)
     return render_template('table/producttest.html',session=session,product=Product_data)
 
+@product.route("/delete/variant",methods=["POST"])
+def delete_variant():
+    uuid = request.form.get("uuid", "").strip()
+    variant_id = request.form.get("variant_id", "").strip()
+
+    if not uuid or not variant_id:
+        return jsonify({
+            "status" : "error",
+            "errors" : "Product or Variant not found"
+        }),400
+
+    try:
+        pro_obj = Product(uuid)
+        variants = pro_obj.collection.variants
+        updated_variants = [v for v in variants if v.get("id") != variant_id]
+        pro_obj.collection.variants = updated_variants
+
+        return jsonify({
+            "status" : "success",
+            "message" : "Variant deleted successfully"
+        })
+    except Exception as e:
+        return jsonify({
+            "status" : "error",
+            "errors" : str(e)
+        }), 400
 @product.route("/set/images", methods=["POST"])
 def set_images():
 
