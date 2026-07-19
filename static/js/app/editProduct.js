@@ -374,30 +374,162 @@ $(function () {
 });
 
 
-$(".btn-varient-delete").on("click", function () {
+$("#edit-product-variants").on("click", ".btn-varient-delete", function () {
+    const row = $(this).closest("tr");
     const uuid = $("#uuid").data("uuid");
     const variantId = $(this).attr("id");
     console.log("Deleting variant:", variantId, "for product UUID:", uuid);
-    // $.ajax({
-    //     url: "/api/v1/delete/variant",
-    //     type: "POST",
-    //     data: {
-    //         uuid: uuid,
-    //         variantId: variantId
-    //     },
-    //     success(data) {
-    //         showToast(data.message, "success");
-    //         location.reload();
-    //     },
-    //     error(xhr) {
-    //         showToast(
-    //             xhr.responseJSON?.errors ||
-    //             "Something went wrong.",
-    //             "error"
-    //         );
-    //     }
-    // });
+    $.ajax({
+        url: "/api/v1/delete/variant",
+        type: "POST",
+        data: {
+            uuid: uuid,
+            variant_id: variantId
+        },
+        success(data) {
+          
+            row.remove();
+            showToast(data.message, "success");
+            
+        },
+        error(xhr) {
+            showToast(
+                xhr.responseJSON?.errors ||
+                "Something went wrong.",
+                "error"
+            );
+        }
+    });
 });
+
+$("#add-variant-btn").on("click", function (e) {
+    e.preventDefault();
+ 
+    console.log("Opening Add Variant dialog...");
+    dialog = new Dialog({
+        title: "Add Variant",
+        content: `
+            <form id="addVariantForm">
+                <div class="mb-3">
+                    <label for="color" class="form-label">Color</label>
+                    <input type="text" class="form-control color" id="color" required>
+                </div>
+                <div class="mb-3">
+                    <label for="size" class="form-label">Size</label>
+                    <input type="text" class="form-control size" id="size" required>
+                </div>
+                <div class="mb-3">
+                    <label for="variant-price" class="form-label">Price</label>
+                    <input type="number" step="0.01" class="form-control variant-price" id="variant-price" required>
+                </div>
+            </form>
+        `,
+        size: "md"
+    })
+    .setButtons([
+        {
+            text: "Cancel",
+            class: "btn-secondary",
+            dismiss: true
+        },
+        {
+            text: "Submit",
+            class: "btn-primary",
+            onClick: function (e, modal) {
+                const form = modal.find("#addVariantForm");
+                if (form[0].checkValidity()) {
+                    addVariant(form);
+                    bootstrap.Modal.getInstance(modal[0]).hide();
+                } else {
+                    form[0].reportValidity();
+                }
+            }
+        }
+    ])
+    .render();
+});
+
+function addVariant(form) {
+    const uuid = $("#uuid").data("uuid");
+    let variants = {};
+    const color = form.find(".color").val();
+    const size = form.find(".size").val();
+    const price = form.find(".variant-price").val();
+    const profitprice = $("#previewPrice").text();
+    const id = crypto.randomUUID();
+    variants[id] = {
+        color: color,
+        size: size,
+        price: price
+    };
+    console.log("Adding variant for product UUID:", uuid);
+    $.ajax({
+        url: "/api/v1/add/variant",
+        type: "POST",
+        data: {
+            uuid: uuid,
+            variants: JSON.stringify(variants)
+        },
+        success(data) {
+           const totalPrice = Number(price) + Number(profitprice);
+            $("#edit-product-variants").append(`
+                <tr class=variant-row-${id}">
+                        
+                        <td>
+                            <div class="d-flex px-2 py-1">
+                                
+                                <div id="avatarLetter"
+                                class="avatar avatar-sm me-3 bg-gradient-danger text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">
+                                ${color.charAt(0).toUpperCase()}
+                            </div>
+                            
+                            <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm previewName" id="previewName">${color.toUpperCase()}</h6>
+                                
+                            </div>
+                            
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <p class="text-xs font-weight-bold mb-0 previewPrice">
+                            ${size.charAt(0).toUpperCase()}
+                        </p>
+                        
+                        <p class="text-xs text-secondary mb-0 ">
+                            price: <span clas="previewQuantity">${price}</span>
+                        </p>
+                    </td>
+                    
+                    <td class="align-middle text-center text-sm">
+                        
+                        <p class="text-xs font-weight-bold mb-0 previewPrice">
+                            ${totalPrice}
+                        </p>
+                        
+                    </td>
+                    
+                    <td class="align-middle text-center">
+                        <button type="button" id=${id} class="btn btn-link btn-varient-delete text-danger p-2" title="Delete">
+                            <i class="fas fa-trash-alt text-lg"></i>
+                        </button>
+                    </td>
+                    <th class="text-secondary opacity-7"></th>
+                    
+                    
+                </tr>`);
+                showToast(data.message, "success");
+        },
+
+        error(xhr) {
+            showToast(
+                xhr.responseJSON?.errors ||
+                "Something went wrong.",
+                "error"
+            );
+        }
+    });
+}
 
 $("#EditProductForm").on("click", ".edit-icon", function () {
     console.log($(this).attr("id"));
