@@ -43,7 +43,7 @@ def signup():
     return render_template('signup.html')
 
 
-@app.route('/shirts')
+@app.route('/products')
 def product():
     if session.get('authenticated'):
         product = list(get_products())
