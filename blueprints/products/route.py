@@ -264,6 +264,7 @@ def add_product():
         "price": data["price"],
         "quantity": data["quantity"],
         "variants": data["variants"],
+        "category" : data["category"],
         "images": saved_images
     }
     instance = Product.put(product_data)

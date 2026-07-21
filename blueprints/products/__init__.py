@@ -27,7 +27,9 @@ def validate_product_form(request):
     description = request.form.get("description", "").strip()
     price = request.form.get("price", "").strip()
     quantity = request.form.get("quantity", "").strip()
+    category = request.form.get("category","").strip()
     variants_json = request.form.get("variants", "")
+
     images = request.files.getlist("images[]")
 
     if len(name) < 3:
@@ -35,6 +37,9 @@ def validate_product_form(request):
 
     if len(description) < 25:
         errors["description"] = "Description must be at least 25 characters"
+    
+    if not category:
+        errors["category"] = "category not given"
 
     try:
         price = int(price)
@@ -89,7 +94,8 @@ def validate_product_form(request):
         "price": price,
         "quantity": quantity,
         "variants": variants,
-        "images": images
+        "images": images,
+        "category" : category
     }
 
 from . import route

@@ -196,7 +196,7 @@ function validate_variant() {
         return false;
       }
       
-      if (size.trim().length !== 1) {
+      if (size === 1) {
         invalidField = $(this).find(".size");
         showToast(`Variant ${row}: Invalid size.`, "warning");
         return false;
@@ -463,11 +463,17 @@ $(document).ready(function () {
               return;
             }
             
+            const category = $("#categorySelect").val()
+            if (category === null){
+              showToast("select Category ","warning")
+              return
+            }
             const formData = new FormData();
             formData.append("name", $("#productName").val());
             formData.append("description", $("#description").val());
             formData.append("price", $("#price").val());
             formData.append("quantity", $("#quantity").val());
+            formData.append("category",category)
             
             selectedImages.forEach(function (file) {
               formData.append("images[]", file);
