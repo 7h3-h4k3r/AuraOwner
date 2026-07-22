@@ -175,28 +175,34 @@ def set_images():
 
     uuid = request.form.get("uuid", "").strip()
 
-    existing_images = json.loads(
-        request.form.get("existingImages", "[]")
+    deleted_images = json.loads(
+        request.form.get("deletedImage", "[]")
     )
 
+    print(deleted_images)
     new_images = request.files.getlist("images[]")
-
+    print(new_images)
     if not uuid:
         return jsonify({
             "status": "error",
             "errors": "Product not found"
         }), 400
 
-    total = len(existing_images) + len(new_images)
-
-    if total > 5:
+    total = len(deleted_images) + len(new_images)
+    if total > 7:
         return jsonify({
             "status": "error",
-            "errors": "Maximum 5 images allowed"
+            "errors": "Maximum 7 images allowed"
         }), 400
 
+    if not len(new_images):
+        return jsonify({
+            "status": "success",
+            "message": "Images updated successfully"
+        })
 
-    final_images = existing_images.copy()
+
+    final_images = []
 
     
     for image in new_images:
@@ -217,7 +223,8 @@ def set_images():
 
     try:
         pro_obj = Product(uuid)
-        pro_obj.collection.images = final_images
+        pro_obj.collection.images.update(final_image)
+        pro_obj.collection.images.delete(deleted_images)
 
         return jsonify({
             "status": "success",

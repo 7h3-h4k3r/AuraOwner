@@ -203,160 +203,170 @@ function setText(id){
 
 const ProductManager = {
     
-    existingImages: [],    
-    selectedImages: [],     
-
+    deletedImage: [],    
+    selectedImages: [],  
+    
+    
     init() {
         this.bindEvents();
     },
-
+    
     bindEvents() {
-
+        
         $("#dropArea").on("click", () => {
             $("#images").click();
         });
-
+        
         $("#images").on("change", (e) => {
             this.handleFiles(e.target.files);
             $("#images").val("");
         });
-
+        
         $("#gallery").on("click", ".remove-btn", (e) => {
-            this.removeImage(e);
+            const imageCard = $(e.currentTarget).closest(".image-card")
+            
+            if (imageCard.hasClass("existing")){
+                const imagePath = imageCard.data('image')
+                this.deletedImage.push(imagePath);
+                this.removeImage(e);
+            }else{
+                
+                this.removeImage(e);
+            }
+        
         });
-
+        
         $("#saveImagesBtn").on("click", (e) => {
             this.saveImages(e);
         });
-
+        
     },
-
-
+    
+    
     handleFiles(files) {
-
+        
         const newFiles = Array.from(files);
-
-        if (this.selectedImages.length + this.existingImages.length + newFiles.length > 7) {
+        
+        if (this.selectedImages.length + this.getExistingImages() + newFiles.length > 7) {
             showToast("Maximum 7 images only.", "warning");
             return;
         }
-
+        
         newFiles.forEach(file => {
-
+            
             if (!file.type.startsWith("image/"))
                 return;
-
+            
             this.selectedImages.push(file);
-
+            
             const reader = new FileReader();
-
+            
             reader.onload = (e) => {
-
+                
                 if ($(".previewImage img").length === 0) {
                     $(".previewImage").html(`<img src="${e.target.result}">`);
                 }
-
+                
                 $("#gallery").append(`
                     <div class="image-card new">
                         <button type="button" class="remove-btn">×</button>
                         <img src="${e.target.result}">
                     </div>
                 `);
+                    
+                };
+                
+                reader.readAsDataURL(file);
+                
+            });
+            
+        },
+        
+        removeImage(e) {
+            
+            const card = $(e.target).closest(".image-card");
+            
+            card.remove()
+            
+        },
+        
+        getExistingImages() {
+            return $("#gallery .image-card.existing").length
+        },
+        
+        saveImages(e) {
+            
+            e.preventDefault();
+            const ex_lenght = this.getExistingImages();
+            const total = ex_lenght  + this.selectedImages.length;
+            
+            console.log("Total images to save:", total);
+            if (total < 5) {
+                showToast("Please select at least five images.", "error");
+                return;
+            }
 
-            };
-
-            reader.readAsDataURL(file);
-
-        });
-
-    },
-
-    removeImage(e) {
-
-        const card = $(e.target).closest(".image-card");
-
-        // Existing image
-        if (card.hasClass("existing")) {
-
-            const filename = card.data("image");
-
-            this.existingImages = this.existingImages.filter(
-                img => img !== filename
+            
+            const formData = new FormData();
+            
+            formData.append(
+                "uuid",
+                $("#uuid").data("uuid")
             );
-
+            
+            
+            formData.append(
+                "deletedImage",
+                JSON.stringify(this.deletedImage)
+            );
+            
+            
+            this.selectedImages.forEach(file => {
+                formData.append("images[]", file);
+            });
+            
+            $.ajax({
+                url: "/api/v1/set/images",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success(data) {
+                    showToast(data.message, "success");
+                },
+                error(xhr) {
+                    showToast(
+                        xhr.responseJSON?.errors ||
+                        "Something went wrong.",
+                        "error"
+                    );
+                }
+            });
         }
-
-        // Newly uploaded image
-        else {
-
-            const index = card.prevAll(".image-card.new").length;
-
-            this.selectedImages.splice(index, 1);
-
-        }
-
-        card.remove();
-
-        const first = $("#gallery img").first().attr("src");
-
-        if (first) {
-            $(".previewImage").html(`<img src="${first}">`);
-        } else {
-            $(".previewImage").empty();
-        }
-
-    },
-
-    getExistingImages() {
-        this.existingImages = [];
-        console.log("Fetching existing images...");
-        $("#gallery .image-card.existing").each((index, card) => {
-            const filename = $(card).data("image");
-            console.log("Existing image:", filename);
-            this.existingImages.push(filename);
-        });
-
-    },
-
-    saveImages(e) {
+    };
     
-        e.preventDefault();
-        this.getExistingImages();
-        const total =
-            this.existingImages.length +
-            this.selectedImages.length;
-        console.log("Total images to save:", total);
-        if (total < 5) {
-            showToast("Please select at least five images.", "error");
-            return;
-        }
-
-        const formData = new FormData();
-
-        formData.append(
-            "uuid",
-            $("#uuid").data("uuid")
-        );
-
-
-        formData.append(
-            "existingImages",
-            JSON.stringify(this.existingImages)
-        );
-
-     
-        this.selectedImages.forEach(file => {
-            formData.append("images[]", file);
-        });
-
+    $(function () {
+        ProductManager.init();
+    });
+    
+    
+    $("#edit-product-variants").on("click", ".btn-varient-delete", function () {
+        const row = $(this).closest("tr");
+        const uuid = $("#uuid").data("uuid");
+        const variantId = $(this).attr("id");
+        console.log("Deleting variant:", variantId, "for product UUID:", uuid);
         $.ajax({
-            url: "/api/v1/set/images",
+            url: "/api/v1/delete/variant",
             type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
+            data: {
+                uuid: uuid,
+                variant_id: variantId
+            },
             success(data) {
+                
+                row.remove();
                 showToast(data.message, "success");
+                
             },
             error(xhr) {
                 showToast(
@@ -366,49 +376,15 @@ const ProductManager = {
                 );
             }
         });
-    }
-};
-
-$(function () {
-    ProductManager.init();
-});
-
-
-$("#edit-product-variants").on("click", ".btn-varient-delete", function () {
-    const row = $(this).closest("tr");
-    const uuid = $("#uuid").data("uuid");
-    const variantId = $(this).attr("id");
-    console.log("Deleting variant:", variantId, "for product UUID:", uuid);
-    $.ajax({
-        url: "/api/v1/delete/variant",
-        type: "POST",
-        data: {
-            uuid: uuid,
-            variant_id: variantId
-        },
-        success(data) {
-          
-            row.remove();
-            showToast(data.message, "success");
-            
-        },
-        error(xhr) {
-            showToast(
-                xhr.responseJSON?.errors ||
-                "Something went wrong.",
-                "error"
-            );
-        }
     });
-});
-
-$("#add-variant-btn").on("click", function (e) {
-    e.preventDefault();
- 
-    console.log("Opening Add Variant dialog...");
-    dialog = new Dialog({
-        title: "Add Variant",
-        content: `
+    
+    $("#add-variant-btn").on("click", function (e) {
+        e.preventDefault();
+        
+        console.log("Opening Add Variant dialog...");
+        dialog = new Dialog({
+            title: "Add Variant",
+            content: `
             <form id="addVariantForm">
                 <div class="mb-3">
                     <label for="color" class="form-label">Color</label>
@@ -424,55 +400,55 @@ $("#add-variant-btn").on("click", function (e) {
                 </div>
             </form>
         `,
-        size: "md"
-    })
-    .setButtons([
-        {
-            text: "Cancel",
-            class: "btn-secondary",
-            dismiss: true
-        },
-        {
-            text: "Submit",
-            class: "btn-primary",
-            onClick: function (e, modal) {
-                const form = modal.find("#addVariantForm");
-                if (form[0].checkValidity()) {
-                    addVariant(form);
-                    bootstrap.Modal.getInstance(modal[0]).hide();
-                } else {
-                    form[0].reportValidity();
+            size: "md"
+        })
+        .setButtons([
+            {
+                text: "Cancel",
+                class: "btn-secondary",
+                dismiss: true
+            },
+            {
+                text: "Submit",
+                class: "btn-primary",
+                onClick: function (e, modal) {
+                    const form = modal.find("#addVariantForm");
+                    if (form[0].checkValidity()) {
+                        addVariant(form);
+                        bootstrap.Modal.getInstance(modal[0]).hide();
+                    } else {
+                        form[0].reportValidity();
+                    }
                 }
             }
-        }
-    ])
-    .render();
-});
-
-function addVariant(form) {
-    const uuid = $("#uuid").data("uuid");
-    let variants = {};
-    const color = form.find(".color").val();
-    const size = form.find(".size").val();
-    const price = form.find(".variant-price").val();
-    const profitprice = $("#previewPrice").text();
-    const id = crypto.randomUUID();
-    variants[id] = {
-        color: color,
-        size: size,
-        price: price
-    };
-    console.log("Adding variant for product UUID:", uuid);
-    $.ajax({
-        url: "/api/v1/add/variant",
-        type: "POST",
-        data: {
-            uuid: uuid,
-            variants: JSON.stringify(variants)
-        },
-        success(data) {
-           const totalPrice = Number(price) + Number(profitprice);
-            $("#edit-product-variants").append(`
+        ])
+        .render();
+    });
+    
+    function addVariant(form) {
+        const uuid = $("#uuid").data("uuid");
+        let variants = {};
+        const color = form.find(".color").val();
+        const size = form.find(".size").val();
+        const price = form.find(".variant-price").val();
+        const profitprice = $("#previewPrice").text();
+        const id = crypto.randomUUID();
+        variants[id] = {
+            color: color,
+            size: size,
+            price: price
+        };
+        console.log("Adding variant for product UUID:", uuid);
+        $.ajax({
+            url: "/api/v1/add/variant",
+            type: "POST",
+            data: {
+                uuid: uuid,
+                variants: JSON.stringify(variants)
+            },
+            success(data) {
+                const totalPrice = Number(price) + Number(profitprice);
+                $("#edit-product-variants").append(`
                 <tr class=variant-row-${id}">
                         
                         <td>
@@ -518,50 +494,51 @@ function addVariant(form) {
                     
                     
                 </tr>`);
-                showToast(data.message, "success");
-        },
-
-        error(xhr) {
-            showToast(
-                xhr.responseJSON?.errors ||
-                "Something went wrong.",
-                "error"
-            );
+                    showToast(data.message, "success");
+                },
+                
+                error(xhr) {
+                    showToast(
+                        xhr.responseJSON?.errors ||
+                        "Something went wrong.",
+                        "error"
+                    );
+                }
+            });
         }
-    });
-}
-
-$("#EditProductForm").on("click", ".edit-icon", function () {
-    console.log($(this).attr("id"));
-    var status = $(this).attr("id")
-    
-    switch (status) {
-        case "previewStockBadge":
-        setBadges("stock")
-        break;
-        case "previewPrices":
-        setvar("price")
-        break;
-        case "previewQtys":
-        setvar("quantity")
-        break;
-        case "previewTag":
-        setBadges("tag")
-        break;
-        case "previewDisBadge":
-        setBadges("dis")
-        break;
-        case "previewName":
-        setvar("name",true)
-        break;
-        case "previewDescription":
-        setvar("description",true)
-        break;
-        case "imageHolder":
-        console.log('image get')
-        getImg($("#uuid"))
-        break;
-    }
-});
-
-
+        
+        $("#EditProductForm").on("click", ".edit-icon", function () {
+            console.log($(this).attr("id"));
+            var status = $(this).attr("id")
+            
+            switch (status) {
+                case "previewStockBadge":
+                setBadges("stock")
+                break;
+                case "previewPrices":
+                setvar("price")
+                break;
+                case "previewQtys":
+                setvar("quantity")
+                break;
+                case "previewTag":
+                setBadges("tag")
+                break;
+                case "previewDisBadge":
+                setBadges("dis")
+                break;
+                case "previewName":
+                setvar("name",true)
+                break;
+                case "previewDescription":
+                setvar("description",true)
+                break;
+                case "imageHolder":
+                console.log('image get')
+                getImg($("#uuid"))
+                break;
+            }
+        });
+        
+        
+        

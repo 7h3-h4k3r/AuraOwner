@@ -139,7 +139,7 @@
                     
                     <div id="gallery">
                         {% for image in product.collection.images %}
-                        <div class="image-card existing">
+                        <div class="image-card existing" data-image="{{image}}">
                             <button type="button" class="remove-btn">×</button>
                             <img src="{{ url_for('static', filename=image) }}" alt="Image"> 
                             
