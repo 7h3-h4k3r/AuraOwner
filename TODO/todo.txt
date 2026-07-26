@@ -1,3 +1,30 @@
-create a Catogery src 
-send otp via email
-verify after login
+🏠 Dashboard
+
+ANALYTICS (Dashboard)
+    📈 Sales
+    💰 Revenue
+    📊 Reports
+
+
+CATALOG
+    👕 Products
+    📂 Categories
+
+ORDERS
+    📦 Orders
+    🚚 Shipping
+    ↩ Returns
+
+CUSTOMERS
+    👤 Customers
+    ⭐ Reviews
+
+MARKETING
+    🎟 Coupons
+    📢 Promotions
+
+
+
+SETTINGS
+    ⚙ Store Settings
+    👥 Users
